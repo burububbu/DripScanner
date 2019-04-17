@@ -2,7 +2,7 @@
   "name": "drip-scanner",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Michele Celozzi",
   "license": "MIT",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
