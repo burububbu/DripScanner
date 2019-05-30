@@ -1,0 +1,183 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { LoadingController, AlertController } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DripsService } from 'src/app/providers/drips/drips.service';
+import { Drip } from 'src/app/providers/drips/drip';
+
+import { Chart } from 'chart.js';
+
+import * as palette from 'google-palette';
+
+@Component({
+  selector: 'app-info-drip',
+  templateUrl: './info-drip.page.html',
+  styleUrls: ['./info-drip.page.scss']
+})
+export class InfoDripPage implements OnInit {
+  @ViewChild('barCanvas') barCanvas;
+  @ViewChild('lineCanvas') lineCanvas;
+  @ViewChild('doughnutCanvas') doughnutCanvas;
+  doughnutChart: any;
+  barChart: any;
+  lineChart: any;
+  currentID: string;
+  currentDrip: Drip;
+  infoEntries: [string, any][];
+  isHidden = true;
+
+  constructor(
+    private route: ActivatedRoute,
+    private dripService: DripsService,
+    private loadingController: LoadingController,
+    private router: Router,
+    private alertController: AlertController
+  ) {}
+
+  ngOnInit() {
+    this.currentID = this.route.snapshot.paramMap.get('id');
+    this.loadingController
+      .create({
+        message: 'Please wait...'
+      })
+      .then(res => {
+        res.present();
+        this.dripService.getDrip(this.currentID).subscribe(
+          drip => {
+            this.currentDrip = drip;
+            this.infoEntries = this.getInfoEntries();
+            this.getCharts();
+            this.isHidden = false;
+          },
+          err => {
+            if (err.status == 404) {
+              this.presentAlert(
+                `Non è stata trovata nessuna flebo con il codice ${
+                  this.currentID
+                }`
+              );
+            } else {
+              this.presentAlert(JSON.stringify(err));
+            }
+          }
+        );
+        res.dismiss();
+      });
+  }
+
+  ionViewDidLoad() {}
+
+  async presentAlert(msg: string) {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: msg,
+      buttons: [
+        {
+          text: 'ok',
+          handler: () => {
+            this.router.navigateByUrl('/tabs/scan');
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  private getCharts() {
+    this.getDoughnutChart('composizione');
+    this.getBarChart('dosaggioEta');
+    this.getLineChart('dosaggioPeso');
+  }
+
+  getChart(context, chartType, data, options?) {
+    return new Chart(context, {
+      type: chartType,
+      data,
+      options
+    });
+  }
+
+  getData(tipo: string) {
+    const label1 = [];
+    const data1 = [];
+    this.currentDrip[tipo].forEach((v, k) => {
+      label1.push(k), data1.push(v);
+    });
+    return [label1, data1];
+  }
+
+  getColours(numbers: number): [string] {
+    const arr = palette('tol-dv', numbers);
+    const arr1 = arr.map(x => {
+      return '#' + x;
+    });
+    return arr1;
+  }
+  getDoughnutChart(tipo: string) {
+    const data = {
+      labels: this.getData(tipo)[0],
+      datasets: [
+        {
+          label: 'ml',
+          data: this.getData(tipo)[1],
+          backgroundColor: this.getColours(this.getData(tipo)[1].length),
+          borderColor: []
+        }
+      ]
+    };
+    return this.getChart(this.doughnutCanvas.nativeElement, 'doughnut', data);
+  }
+  getBarChart(tipo: string) {
+    const data = {
+      labels: this.getData(tipo)[0],
+      datasets: [
+        {
+          label: 'ml',
+          data: this.getData(tipo)[1],
+          backgroundColor: this.getColours(this.getData(tipo)[1].length),
+          borderColor: [],
+          borderWidth: 1
+        }
+      ]
+    };
+
+    const options = {
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true
+            }
+          }
+        ]
+      }
+    };
+
+    return this.getChart(this.barCanvas.nativeElement, 'bar', data, options);
+  }
+  getLineChart(tipo: string) {
+    const data = {
+      labels: this.getData(tipo)[0],
+      datasets: [
+        {
+          label: tipo,
+          fill: false,
+          borderColor: 'orange',
+          data: this.getData(tipo)[1]
+        }
+      ]
+    };
+    return this.getChart(this.lineCanvas.nativeElement, 'line', data);
+  }
+
+  private getInfoEntries() {
+    const entries = Object.entries(this.currentDrip);
+    console.log(this.currentDrip);
+    entries.shift();
+    return entries.filter(element => {
+      if (!(element[1] instanceof Map)) {
+        return element;
+      }
+    });
+  }
+}

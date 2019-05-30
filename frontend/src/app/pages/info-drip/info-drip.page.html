@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <ion-icon name="arrow-round-back" routerLink="/tabs/scan"></ion-icon>
+      Info about {{ currentID }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <div [hidden]="isHidden">
+    <ion-card>
+      <ion-card-header>
+        Info
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item *ngFor="let element of infoEntries">
+          <ion-label> {{ element[0] }} : {{ element[1] }}</ion-label>
+        </ion-item>
+      </ion-card-content></ion-card
+    >
+    <ion-card>
+      <ion-card-header>
+        Composizione
+      </ion-card-header>
+      <ion-card-content>
+        <canvas #doughnutCanvas></canvas>
+      </ion-card-content>
+    </ion-card>
+    <ion-card>
+      <ion-card-header>
+        Dosaggio Eta
+      </ion-card-header>
+      <ion-card-content>
+        <canvas #barCanvas></canvas>
+      </ion-card-content>
+    </ion-card>
+    <ion-card>
+      <ion-card-header>
+        Dosaggio Peso
+      </ion-card-header>
+      <ion-card-content>
+        <canvas #lineCanvas></canvas>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
