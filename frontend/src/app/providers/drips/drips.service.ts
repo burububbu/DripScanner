@@ -8,8 +8,8 @@ import { Drip } from './drip';
   providedIn: 'root'
 })
 export class DripsService {
-// baseUrl = 'http://localhost:3000/drips/';
-  baseUrl = 'http://10.0.3.254:3000/drips/';
+ baseUrl = 'http://localhost:3000/drips/';
+ // baseUrl = 'http://10.0.3.254:3000/drips/';
 
   constructor(private httpClient: HttpClient) {}
 
