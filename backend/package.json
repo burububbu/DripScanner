@@ -19,9 +19,15 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/common": "^6.0.0",
-    "@nestjs/core": "^6.0.0",
+    "@nestjs/common": "^5.4.0",
+    "@nestjs/core": "^5.4.0",
+    "@nestjs/mongoose": "^6.1.2",
     "@nestjs/platform-express": "^6.0.0",
+    "express-jwt": "^5.3.1",
+    "express-rate-limit": "^5.0.0",
+    "helmet": "^3.20.0",
+    "jwks-rsa": "^1.6.0",
+    "mongoose": "^5.6.8",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3"
