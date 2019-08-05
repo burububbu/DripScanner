@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DripSchema } from './common/drip.schema';
 import { DripsController } from './controllers/drips/drips.controller';
 import { DripsService } from './services/drips/drips.service';
+import { AuthenticationMiddleware } from './middlewares/authentication.middleware';
 
 @Module({
   imports: [
@@ -17,4 +18,8 @@ import { DripsService } from './services/drips/drips.service';
   controllers: [AppController, DripsController],
   providers: [AppService, DripsService],
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthenticationMiddleware).forRoutes('*');
+  }
+}
