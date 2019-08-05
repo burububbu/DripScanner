@@ -1,11 +1,9 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>
-      <ion-icon name="arrow-round-back" routerLink="/tabs/scan"></ion-icon>
-      Info about {{ currentID }}
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  [title]="'Info about'"
+  [backButtonVisible]="true"
+  (backButtonClick)="goBack()"
+>
+</app-header>
 
 <ion-content padding>
   <div [hidden]="isHidden">

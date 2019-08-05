@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AuthService } from 'src/app/providers/auth/auth.service';
 import { AlertController } from '@ionic/angular';
 
@@ -9,7 +9,9 @@ import { AlertController } from '@ionic/angular';
 })
 export class HeaderComponent implements OnInit {
   // tslint:disable-next-line: no-input-rename
-  @Input('title') title = 'Drip Scanner';
+  @Input() title = 'Drip Scanner';
+  @Input() backButtonVisible = false;
+  @Output() backButtonClick = new EventEmitter<unknown>();
 
   constructor(
     private readonly authService: AuthService,
@@ -18,6 +20,7 @@ export class HeaderComponent implements OnInit {
   /**
    *
    */
+
   async presentAlert() {
     return await (await this.alertController.create({
       header: 'Logout',
@@ -50,5 +53,9 @@ export class HeaderComponent implements OnInit {
    */
   getProfile() {
     return this.authService.profile;
+  }
+
+  backButtonHandler() {
+    this.backButtonClick.emit();
   }
 }

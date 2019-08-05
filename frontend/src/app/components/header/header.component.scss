@@ -1,0 +1,21 @@
+ion-header {
+  ion-toolbar {
+    --background: linear-gradient(
+      to right,
+      var(--ion-color-primary) 0%,
+      var(--ion-color-tertiary) 100%
+    );
+    text-align: left;
+    ion-icon {
+      color: var(--ion-color-dark);
+      font-size: 32px;
+      padding: 2px;
+    }
+    div {
+      display: inline-flex;
+      font-size: 25px;
+      font-family: Arial, Helvetica, sans-serif;
+      align-items: center;
+    }
+  }
+}

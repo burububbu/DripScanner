@@ -44,6 +44,7 @@ export class InfoDripPage implements OnInit {
         this.dripService.getDrip(this.currentID).subscribe(
           drip => {
             this.currentDrip = drip;
+            console.log(this.currentDrip);
             this.infoEntries = this.getInfoEntries();
             this.getCharts();
             this.isHidden = false;
@@ -179,5 +180,9 @@ export class InfoDripPage implements OnInit {
         return element;
       }
     });
+  }
+
+  goBack() {
+    this.router.navigateByUrl('/tabs');
   }
 }
