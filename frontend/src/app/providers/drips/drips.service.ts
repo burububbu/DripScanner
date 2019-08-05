@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Drip } from './drip';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { Drip } from "./drip";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class DripsService {
- baseUrl = 'http://localhost:3000/drips/';
- // baseUrl = 'http://10.0.3.254:3000/drips/';
+  baseUrl = "http://192.168.1.106:3000/drips/";
+  // baseUrl = 'http://10.0.3.254:3000/drips/';
 
   constructor(private httpClient: HttpClient) {}
 
