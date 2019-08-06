@@ -2,8 +2,8 @@ ion-header {
   ion-toolbar {
     --background: linear-gradient(
       to right,
-      var(--ion-color-primary) 0%,
-      var(--ion-color-tertiary) 100%
+      var(--ion-color-secondary) 0%,
+      var(--ion-color-primary) 100%
     );
     text-align: left;
     ion-icon {
@@ -16,6 +16,9 @@ ion-header {
       font-size: 25px;
       font-family: Arial, Helvetica, sans-serif;
       align-items: center;
+      span {
+        padding: 8px;
+      }
     }
   }
 }
