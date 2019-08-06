@@ -5,7 +5,7 @@ export class Drip {
   dosaggioEta: Map<string, number>;
   dosaggioPeso: Map<string, number>;
   quantita: number;
-  scadenza: Date;
+  scadenza: Date | string;
   temperaturaMax: number;
 
   constructor(values: object = {}) {
@@ -14,5 +14,6 @@ export class Drip {
     this.dosaggioEta = new Map(Object.entries(this.dosaggioEta));
     this.dosaggioPeso = new Map(Object.entries(this.dosaggioPeso));
     this.scadenza = new Date(this.scadenza);
+    this.scadenza = `${this.scadenza.getDate()}/${this.scadenza.getMonth()}/${this.scadenza.getFullYear()}`;
   }
 }

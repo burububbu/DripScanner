@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DripsService } from 'src/app/providers/drips/drips.service';
@@ -7,6 +7,9 @@ import { Drip } from 'src/app/providers/drips/drip';
 import { Chart } from 'chart.js';
 
 import * as palette from 'google-palette';
+import { tap, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { properties } from './properties.enum';
 
 @Component({
   selector: 'app-info-drip',
@@ -21,10 +24,11 @@ export class InfoDripPage implements OnInit {
   barChart: any;
   lineChart: any;
   currentID: string;
-  currentDrip: Drip;
+  // currentDrip: Drip;
+  // currentDrip: Observable<Drip>;
   infoEntries: [string, any][];
-  isHidden = true;
-
+  // isHidden = true;
+  title: string;
   constructor(
     private route: ActivatedRoute,
     private dripService: DripsService,
@@ -35,59 +39,70 @@ export class InfoDripPage implements OnInit {
 
   ngOnInit() {
     this.currentID = this.route.snapshot.paramMap.get('id');
-    this.loadingController
-      .create({
-        message: 'Please wait...'
-      })
-      .then(res => {
-        res.present();
-        this.dripService.getDrip(this.currentID).subscribe(
-          drip => {
-            this.currentDrip = drip;
-            console.log(this.currentDrip);
-            this.infoEntries = this.getInfoEntries();
-            this.getCharts();
-            this.isHidden = false;
-          },
-          err => {
-            if (err.status == 404) {
-              this.presentAlert(
-                `Non è stata trovata nessuna flebo con il codice ${
-                  this.currentID
-                }`
-              );
-            } else {
-              this.presentAlert(JSON.stringify(err));
-            }
-          }
-        );
-        res.dismiss();
-      });
+    this.title = `Info about  ${this.currentID}`;
+
+    this.dripService
+      .getDrip(this.currentID)
+      .pipe(
+        tap(drip => {
+          console.log(drip);
+          this.infoEntries = this.getInfoEntries(drip);
+          this.getCharts(drip);
+        })
+      )
+      .subscribe();
+
+    // this.loadingController
+    //   .create({
+    //     message: 'Please wait...'
+    //   })
+    //   .then(res => {
+    //     res.present();
+    //     this.dripService.getDrip(this.currentID).subscribe(
+    //       drip => {
+    //         this.currentDrip = drip;
+    //         console.log(this.currentDrip);
+    //         this.infoEntries = this.getInfoEntries();
+    //         this.getCharts();
+    //         this.isHidden = false;
+    //       },
+    //       err => {
+    //         if ((err.status = 404)) {
+    //           this.presentAlert(
+    //             `Non è stata trovata nessuna flebo con il codice ${
+    //               this.currentID
+    //             }`
+    //           );
+    //         } else {
+    //           this.presentAlert(JSON.stringify(err));
+    //         }
+    //       }
+    //     );
+    //     res.dismiss();
+    //   });
   }
 
   ionViewDidLoad() {}
+  // async presentAlert(msg: string) {
+  //   const alert = await this.alertController.create({
+  //     header: 'Error',
+  //     message: msg,
+  //     buttons: [
+  //       {
+  //         text: 'ok',
+  //         handler: () => {
+  //           this.router.navigateByUrl('/tabs/scan');
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   await alert.present();
+  // }
 
-  async presentAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Error',
-      message: msg,
-      buttons: [
-        {
-          text: 'ok',
-          handler: () => {
-            this.router.navigateByUrl('/tabs/scan');
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
-  private getCharts() {
-    this.getDoughnutChart('composizione');
-    this.getBarChart('dosaggioEta');
-    this.getLineChart('dosaggioPeso');
+  private getCharts(drip: Drip) {
+    this.getDoughnutChart(drip, 'composizione');
+    this.getBarChart(drip, 'dosaggioEta');
+    this.getLineChart(drip, 'dosaggioPeso');
   }
 
   getChart(context, chartType, data, options?) {
@@ -98,10 +113,11 @@ export class InfoDripPage implements OnInit {
     });
   }
 
-  getData(tipo: string) {
+  getData(drip: Drip, tipo: string) {
     const label1 = [];
     const data1 = [];
-    this.currentDrip[tipo].forEach((v, k) => {
+    console.log(drip);
+    drip[tipo].forEach((v, k) => {
       label1.push(k), data1.push(v);
     });
     return [label1, data1];
@@ -114,28 +130,28 @@ export class InfoDripPage implements OnInit {
     });
     return arr1;
   }
-  getDoughnutChart(tipo: string) {
+  getDoughnutChart(drip: Drip, tipo: string) {
     const data = {
-      labels: this.getData(tipo)[0],
+      labels: this.getData(drip, tipo)[0],
       datasets: [
         {
           label: 'ml',
-          data: this.getData(tipo)[1],
-          backgroundColor: this.getColours(this.getData(tipo)[1].length),
+          data: this.getData(drip, tipo)[1],
+          backgroundColor: this.getColours(this.getData(drip, tipo)[1].length),
           borderColor: []
         }
       ]
     };
     return this.getChart(this.doughnutCanvas.nativeElement, 'doughnut', data);
   }
-  getBarChart(tipo: string) {
+  getBarChart(drip: Drip, tipo: string) {
     const data = {
-      labels: this.getData(tipo)[0],
+      labels: this.getData(drip, tipo)[0],
       datasets: [
         {
           label: 'ml',
-          data: this.getData(tipo)[1],
-          backgroundColor: this.getColours(this.getData(tipo)[1].length),
+          data: this.getData(drip, tipo)[1],
+          backgroundColor: this.getColours(this.getData(drip, tipo)[1].length),
           borderColor: [],
           borderWidth: 1
         }
@@ -156,30 +172,35 @@ export class InfoDripPage implements OnInit {
 
     return this.getChart(this.barCanvas.nativeElement, 'bar', data, options);
   }
-  getLineChart(tipo: string) {
+
+  getLineChart(drip: Drip, tipo: string) {
     const data = {
-      labels: this.getData(tipo)[0],
+      labels: this.getData(drip, tipo)[0],
       datasets: [
         {
           label: tipo,
           fill: false,
           borderColor: 'orange',
-          data: this.getData(tipo)[1]
+          data: this.getData(drip, tipo)[1]
         }
       ]
     };
     return this.getChart(this.lineCanvas.nativeElement, 'line', data);
   }
 
-  private getInfoEntries() {
-    const entries = Object.entries(this.currentDrip);
-    console.log(this.currentDrip);
+  private getInfoEntries(drip: Drip) {
+    const entries = Object.entries(drip);
     entries.shift();
-    return entries.filter(element => {
-      if (!(element[1] instanceof Map)) {
+    return entries
+      .filter(element => {
+        if (!(element[1] instanceof Map)) {
+          return element;
+        }
+      })
+      .map(element => {
+        element[0] = properties[element[0]];
         return element;
-      }
-    });
+      });
   }
 
   goBack() {
