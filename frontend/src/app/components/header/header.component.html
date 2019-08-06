@@ -1,8 +1,12 @@
 <ion-header>
   <ion-toolbar>
     <div>
-      <ion-icon name="arrow-back" (click)="backButtonHandler()"></ion-icon>
-      {{ title }}
+      <ion-icon
+        name="arrow-back"
+        *ngIf="backButtonVisible"
+        (click)="backButtonHandler()"
+      ></ion-icon>
+      <span>{{ title }}</span>
     </div>
     <ion-chip
       *ngIf="getProfile()"
