@@ -10,15 +10,15 @@ import { AuthenticationMiddleware } from './middlewares/authentication.middlewar
 @Module({
   imports: [
     MongooseModule.forRoot(
-      // 'mongodb+srv://AlessandraB:qwqw97b@dripscanner-frbeq.mongodb.net/dripScanner',
-      'mongodb://localhost/dripscanner', { useNewUrlParser: true },
+      'mongodb+srv://AlessandraB:qwqw97b@dripscanner-frbeq.mongodb.net/dripScanner',
+      { useNewUrlParser: true },
     ),
     MongooseModule.forFeature([{ name: 'Drip', schema: DripSchema }]),
   ],
   controllers: [AppController, DripsController],
   providers: [AppService, DripsService],
 })
-export class AppModule implements NestModule{
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthenticationMiddleware).forRoutes('*');
   }

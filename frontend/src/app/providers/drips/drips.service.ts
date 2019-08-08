@@ -8,14 +8,15 @@ import { Drip } from "./drip";
   providedIn: "root"
 })
 export class DripsService {
-  baseUrl = "http://localhost:3000/drips/";
-  // baseUrl = "https://dripscannerita.herokuapp.com/drips/";
+  // baseUrl = "http://localhost:3000/drips/";
+  baseUrl = "https://dripscannerita.herokuapp.com/drips/";
   // baseUrl = 'http://10.0.3.254:3000/drips/';
 
   constructor(private httpClient: HttpClient) {}
 
   // add catch
   public getDrip(id: string): Observable<Drip> {
+    console.log("This is the url: " + this.baseUrl);
     return this.httpClient.get(this.baseUrl + id).pipe(
       map(drip => {
         return new Drip(drip);
