@@ -10,8 +10,8 @@ import { AuthenticationMiddleware } from './middlewares/authentication.middlewar
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://AlessandraB:qwqw97b@dripscanner-frbeq.mongodb.net/dripScanner',
-      { useNewUrlParser: true },
+      // 'mongodb+srv://AlessandraB:qwqw97b@dripscanner-frbeq.mongodb.net/dripScanner',
+      'mongodb://localhost/dripscanner', { useNewUrlParser: true },
     ),
     MongooseModule.forFeature([{ name: 'Drip', schema: DripSchema }]),
   ],
