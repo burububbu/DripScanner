@@ -1,15 +1,16 @@
-import { Injectable } from '@angular/core';
-import { JwtHelperService } from '@auth0/angular-jwt';
+import { Injectable } from "@angular/core";
+import { JwtHelperService } from "@auth0/angular-jwt";
 import {
   InAppBrowser,
   InAppBrowserObject
-} from '@ionic-native/in-app-browser/ngx';
-import { BehaviorSubject } from 'rxjs';
-import { Platform, ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+} from "@ionic-native/in-app-browser/ngx";
+import { BehaviorSubject } from "rxjs";
+import { Platform, ToastController } from "@ionic/angular";
+import { Storage } from "@ionic/storage";
+import { environment } from "src/environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class AuthService {
   constructor(
@@ -21,7 +22,7 @@ export class AuthService {
     this.helper = new JwtHelperService();
     this.plt.ready().then(async () => {
       const toast = await this.toastCtrl.create({
-        message: 'Checking User Login...',
+        message: "Checking User Login...",
         duration: 10000
       });
       toast.present();
@@ -31,17 +32,15 @@ export class AuthService {
     });
   }
 
-  private redirectUrl = 'https://localhost:8000/callback';
-
   private readonly url =
-    'https://' +
-    'dripscanner.eu.auth0.com' +
-    '/authorize?response_type=id_token token&client_id=' +
-    'n5r24dUu4igtYNpbHT7nl9RiWuNDzLHq' +
-    '&redirect_uri=' +
-    this.redirectUrl +
-    '&scope=openid profile offline_access&nonce=pawm&audience=' +
-    'http://localhost:3000';
+    "https://" +
+    environment.AUTH0_DOMAIN +
+    "/authorize?response_type=id_token token&client_id=" +
+    environment.AUTH0_CLIENTID +
+    "&redirect_uri=" +
+    environment.AUTH0_REDIRECTURL +
+    "&scope=openid profile offline_access&nonce=pawm&audience=" +
+    environment.AUTH0_AUDIENCE;
 
   private browser: InAppBrowserObject;
 
@@ -54,7 +53,7 @@ export class AuthService {
    * allows to read the access token
    */
   get access_token() {
-    return this.storage.get('access_token');
+    return this.storage.get("access_token");
   }
 
   /**
@@ -69,10 +68,10 @@ export class AuthService {
    *  otherwise if the token does not exist the logout is made
    */
   private async checkToken() {
-    const id_token = await this.storage.get('id_token');
+    const id_token = await this.storage.get("id_token");
     if (id_token) {
       if (!this.helper.isTokenExpired(id_token)) {
-        this.user = this.helper.decodeToken(await this.storage.get('id_token'));
+        this.user = this.helper.decodeToken(await this.storage.get("id_token"));
         this.authenticationState.next(true);
       } else {
         this.logout();
@@ -86,17 +85,17 @@ export class AuthService {
    * @param idToken
    */
   private async setTokens(accessToken: string, idToken: string) {
-    await this.storage.set('access_token', accessToken);
-    await this.storage.set('id_token', idToken);
+    await this.storage.set("access_token", accessToken);
+    await this.storage.set("id_token", idToken);
     this.user = this.helper.decodeToken(idToken);
   }
   /**
    * allows to log out from the application
    */
   async logout() {
-    await this.storage.remove('access_token');
-    await this.storage.remove('id_token');
-    await this.storage.set('loggedOut', true);
+    await this.storage.remove("access_token");
+    await this.storage.remove("id_token");
+    await this.storage.set("loggedOut", true);
     this.authenticationState.next(false);
   }
   /**
@@ -105,12 +104,12 @@ export class AuthService {
    * @param param
    */
   private getParam(url: string, param: string): string {
-    param += '=';
+    param += "=";
     return url.substring(
       url.indexOf(param) + param.length,
-      url.indexOf('&', url.indexOf(param)) === -1
+      url.indexOf("&", url.indexOf(param)) === -1
         ? url.length
-        : url.indexOf('&')
+        : url.indexOf("&")
     );
   }
   /**
@@ -123,28 +122,28 @@ export class AuthService {
    * allows you to log in to the application after making all the necessary checks
    */
   async login() {
-    console.log('setting options');
+    console.log("setting options");
     let options = [
-      'location=no',
-      'hidenavigationbuttons=yes',
-      'hideurlbar=yes',
-      'zoom=no'
-    ].join(',');
-    if (await this.storage.get('loggedOut')) {
+      "location=no",
+      "hidenavigationbuttons=yes",
+      "hideurlbar=yes",
+      "zoom=no"
+    ].join(",");
+    if (await this.storage.get("loggedOut")) {
       options = options.concat(
-        ',',
-        ['clearcache=yes', 'clearsessioncache=yes'].join(',')
+        ",",
+        ["clearcache=yes", "clearsessioncache=yes"].join(",")
       );
     }
-    this.browser = this.iab.create(this.url, '_blank', options);
-    this.browser.on('loadstart').subscribe(e => {
-      if (e.url.indexOf(this.redirectUrl) === 0) {
+    this.browser = this.iab.create(this.url, "_blank", options);
+    this.browser.on("loadstart").subscribe(e => {
+      if (e.url.indexOf(environment.AUTH0_REDIRECTURL) === 0) {
         this.browser.close();
         this.setTokens(
-          this.getParam(e.url, 'access_token'),
-          this.getParam(e.url, 'id_token')
+          this.getParam(e.url, "access_token"),
+          this.getParam(e.url, "id_token")
         ).then(() => this.authenticationState.next(true));
-        this.storage.remove('loggedOut');
+        this.storage.remove("loggedOut");
       }
     });
     this.browser.show();

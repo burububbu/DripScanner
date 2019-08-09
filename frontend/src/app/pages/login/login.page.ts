@@ -9,11 +9,7 @@ import { Router } from "@angular/router";
   styleUrls: ["./login.page.scss"]
 })
 export class LoginPage implements OnInit {
-  constructor(
-    private authService: AuthService,
-    private faio: FingerprintAIO,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private faio: FingerprintAIO) {}
   ngOnInit() {}
   /**
    * allows you to login
@@ -29,7 +25,7 @@ export class LoginPage implements OnInit {
         clientSecret: "password"
       })
       .then(result => {
-        this.router.navigateByUrl("scan");
+        this.authService.login();
       })
       .catch(err => {
         console.log("Err: ", err);
