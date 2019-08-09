@@ -4,6 +4,8 @@ import { expressJwtSecret } from 'jwks-rsa';
 
 @Injectable()
 export class AuthenticationMiddleware implements NestMiddleware {
+  readonly DOMAIN = process.env.AUTH0_DOMAIN;
+
   resolve(): MiddlewareFunction {
     return (req, res, next) => {
       jwt({
@@ -11,11 +13,13 @@ export class AuthenticationMiddleware implements NestMiddleware {
           cache: true,
           rateLimit: true,
           jwksRequestsPerMinute: 5,
-          jwksUri: 'https://dripscanner.eu.auth0.com/.well-known/jwks.json',
+          // jwksUri: `https://${this.DOMAIN}/.well-known/jwks.json`,
+          jwksUri: `https://dripscanner.eu.auth0.com/.well-known/jwks.json`,
         }),
 
         audience: 'http://localhost:3000',
-        issuer: 'https://dripscanner.eu.auth0.com/',
+        // issuer: `https://${this.DOMAIN}/`,
+        issuer: `https://dripscanner.eu.auth0.com/`,
         algorithm: 'RS256',
       })(req, res, err => {
         if (err) {
