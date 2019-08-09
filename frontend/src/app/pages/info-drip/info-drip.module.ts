@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { InfoDripPage } from './info-drip.page';
 import { DripsService } from 'src/app/providers/drips/drips.service';
+import { ComponentModule } from 'src/app/components/component.module';
 
 const routes: Routes = [
   {
@@ -18,6 +19,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
+    ComponentModule,
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes)

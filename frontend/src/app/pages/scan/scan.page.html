@@ -1,9 +1,42 @@
 <app-header title="Scanner"></app-header>
 
 <ion-content padding>
-  <ion-button expand="block" (click)="scan()"> Scan </ion-button>
-
-  <ion-button expand="block" (click)="goToExample()">
-    Go to example
-  </ion-button>
+  <div class="div-container">
+    <p>Logo</p>
+    <p>
+      <ion-icon name="barcode" (click)="scan()"></ion-icon>
+      <ion-button expand="block" (click)="goToExample()">
+        Scannerizza
+      </ion-button>
+    </p>
+    <p>
+      <ion-icon name="list" (click)="scan()"></ion-icon>
+      <ion-button expand="block" (click)="goToExample()">
+        Vai all'esempio
+      </ion-button>
+    </p>
+  </div>
 </ion-content>
+
+<!-- <div>
+    <div class="img-container">
+      <ion-icon
+        name="barcode"
+        class="barcode-button"
+        (click)="scan()"
+      ></ion-icon>
+    </div>
+    
+    <ion-button expand="block" (click)="goToExample()">
+      Go to example
+    </ion-button>
+
+    <div class="img-container">
+      <ion-icon name="list" class="barcode-button" (click)="scan()"></ion-icon>
+    </div>
+     <ion-button expand="block" (click)="scan()"> Scan </ion-button>
+    <ion-icon size="large" name="barcode"></ion-icon> 
+    <ion-button expand="block" (click)="goToExample()">
+      Go to example
+    </ion-button>
+  </div> -->

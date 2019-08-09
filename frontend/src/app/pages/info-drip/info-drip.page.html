@@ -1,47 +1,35 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>
-      <ion-icon name="arrow-round-back" routerLink="/tabs/scan"></ion-icon>
-      Info about {{ currentID }}
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header
+  [title]="title"
+  [backButtonVisible]="true"
+  (backButtonClick)="goBack()"
+>
+</app-header>
 
 <ion-content padding>
-  <div [hidden]="isHidden">
-    <ion-card>
-      <ion-card-header>
-        Info
-      </ion-card-header>
-      <ion-card-content>
-        <ion-item *ngFor="let element of infoEntries">
-          <ion-label> {{ element[0] }} : {{ element[1] }}</ion-label>
-        </ion-item>
-      </ion-card-content></ion-card
-    >
-    <ion-card>
-      <ion-card-header>
-        Composizione
-      </ion-card-header>
-      <ion-card-content>
-        <canvas #doughnutCanvas></canvas>
-      </ion-card-content>
-    </ion-card>
-    <ion-card>
-      <ion-card-header>
-        Dosaggio Eta
-      </ion-card-header>
-      <ion-card-content>
-        <canvas #barCanvas></canvas>
-      </ion-card-content>
-    </ion-card>
-    <ion-card>
-      <ion-card-header>
-        Dosaggio Peso
-      </ion-card-header>
-      <ion-card-content>
-        <canvas #lineCanvas></canvas>
-      </ion-card-content>
-    </ion-card>
-  </div>
+  <ion-fab vertical="top" horizontal="end">
+    <ion-fab-button color="primary">
+      <ion-icon name="share"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <app-info-card [title]="'Informazioni'">
+    <ion-item *ngFor="let element of infoEntries">
+      <ion-label>
+        <span class="info-name">{{ element[0] }}</span
+        >:
+        <span class="info-value">{{ element[1] }}</span>
+      </ion-label>
+    </ion-item>
+  </app-info-card>
+
+  <app-info-card [title]="'Composizione'">
+    <canvas #doughnutCanvas></canvas>
+  </app-info-card>
+
+  <app-info-card [title]="'Dosaggio età'">
+    <canvas #barCanvas></canvas>
+  </app-info-card>
+
+  <app-info-card [title]="'Dosaggio Peso'">
+    <canvas #lineCanvas></canvas>
+  </app-info-card>
 </ion-content>

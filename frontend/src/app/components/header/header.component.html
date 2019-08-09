@@ -1,8 +1,13 @@
 <ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>
-      {{ title }}
-    </ion-title>
+  <ion-toolbar>
+    <div>
+      <ion-icon
+        name="arrow-back"
+        *ngIf="backButtonVisible"
+        (click)="backButtonHandler()"
+      ></ion-icon>
+      <span>{{ title }}</span>
+    </div>
     <ion-chip
       *ngIf="getProfile()"
       (click)="presentAlert()"
