@@ -15,6 +15,7 @@ import { DripsService } from "./providers/drips/drips.service";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { IonicStorageModule } from "@ionic/storage";
 import { InterceptorService } from "./providers/interceptor/interceptor.service";
+import { FingerprintAIO } from "@ionic-native/fingerprint-aio/ngx";
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,7 +35,8 @@ import { InterceptorService } from "./providers/interceptor/interceptor.service"
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
     BarcodeScanner,
-    DripsService
+    DripsService,
+    FingerprintAIO
   ],
   bootstrap: [AppComponent]
 })
