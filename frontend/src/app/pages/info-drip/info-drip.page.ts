@@ -7,8 +7,8 @@ import { Drip } from 'src/app/providers/drips/drip';
 import { Chart } from 'chart.js';
 
 import * as palette from 'google-palette';
-import { tap, map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 import { properties } from './properties.enum';
 
 @Component({
@@ -24,10 +24,9 @@ export class InfoDripPage implements OnInit {
   barChart: any;
   lineChart: any;
   currentID: string;
-  // currentDrip: Drip;
-  // currentDrip: Observable<Drip>;
+  hidden = true;
+
   infoEntries: [string, any][];
-  // isHidden = true;
   title: string;
   constructor(
     private route: ActivatedRoute,
@@ -41,63 +40,51 @@ export class InfoDripPage implements OnInit {
     this.currentID = this.route.snapshot.paramMap.get('id');
     this.title = `Info about  ${this.currentID}`;
 
-    this.dripService
-      .getDrip(this.currentID)
-      .pipe(
-        tap(drip => {
-          console.log(drip);
-          this.infoEntries = this.getInfoEntries(drip);
-          this.getCharts(drip);
-        })
-      )
-      .subscribe();
-
-    // this.loadingController
-    //   .create({
-    //     message: 'Please wait...'
-    //   })
-    //   .then(res => {
-    //     res.present();
-    //     this.dripService.getDrip(this.currentID).subscribe(
-    //       drip => {
-    //         this.currentDrip = drip;
-    //         console.log(this.currentDrip);
-    //         this.infoEntries = this.getInfoEntries();
-    //         this.getCharts();
-    //         this.isHidden = false;
-    //       },
-    //       err => {
-    //         if ((err.status = 404)) {
-    //           this.presentAlert(
-    //             `Non è stata trovata nessuna flebo con il codice ${
-    //               this.currentID
-    //             }`
-    //           );
-    //         } else {
-    //           this.presentAlert(JSON.stringify(err));
-    //         }
-    //       }
-    //     );
-    //     res.dismiss();
-    //   });
+    this.loadingController.create({ message: 'Please wait...' }).then(res => {
+      res.present();
+      const subscriber = this.dripService
+        .getDrip(this.currentID)
+        .pipe(
+          tap(drip => {
+            console.log(drip);
+            this.infoEntries = this.getInfoEntries(drip);
+            this.getCharts(drip);
+            this.hidden = false;
+          }),
+          catchError(err => {
+            if ((err.status = 404)) {
+              this.presentAlert(
+                `Non è stata trovata nessuna flebo con il codice ${
+                  this.currentID
+                }`
+              );
+            } else {
+              this.presentAlert(err.message);
+            }
+            return throwError(err);
+          })
+        )
+        .subscribe(_ => res.dismiss(), err => res.dismiss());
+    });
   }
 
   ionViewDidLoad() {}
-  // async presentAlert(msg: string) {
-  //   const alert = await this.alertController.create({
-  //     header: 'Error',
-  //     message: msg,
-  //     buttons: [
-  //       {
-  //         text: 'ok',
-  //         handler: () => {
-  //           this.router.navigateByUrl('/tabs/scan');
-  //         }
-  //       }
-  //     ]
-  //   });
-  //   await alert.present();
-  // }
+
+  async presentAlert(msg: string) {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: msg,
+      buttons: [
+        {
+          text: 'ok',
+          handler: () => {
+            this.router.navigateByUrl('/tabs/scan');
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
 
   private getCharts(drip: Drip) {
     this.getDoughnutChart(drip, 'composizione');
@@ -205,5 +192,9 @@ export class InfoDripPage implements OnInit {
 
   goBack() {
     this.router.navigateByUrl('/tabs');
+  }
+
+  isHidden() {
+    return this.hidden;
   }
 }

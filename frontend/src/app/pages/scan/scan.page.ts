@@ -42,5 +42,6 @@ export class ScanPage implements OnInit {
 
   goToExample() {
     this.router.navigateByUrl('/info-drip/121as8ed54tg');
+    // this.router.navigateByUrl('/info-drip/121as8eg'); drip non trovata
   }
 }
