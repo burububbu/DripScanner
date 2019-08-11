@@ -72,7 +72,7 @@ export class InfoDripPage implements OnInit {
 
   async presentAlert(msg: string) {
     const alert = await this.alertController.create({
-      header: 'Error',
+      header: 'Errore',
       message: msg,
       buttons: [
         {

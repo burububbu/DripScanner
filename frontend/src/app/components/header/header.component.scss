@@ -9,15 +9,16 @@ ion-header {
     ion-icon {
       color: var(--ion-color-dark);
       font-size: 32px;
-      padding: 2px;
+      padding: 0px;
     }
     div {
       display: inline-flex;
-      font-size: 25px;
+      font-size: 20px;
       font-family: Arial, Helvetica, sans-serif;
       align-items: center;
+      height: 100%;
       span {
-        padding: 8px;
+        padding-left: 4px;
       }
     }
   }
