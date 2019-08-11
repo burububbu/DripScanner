@@ -1,4 +1,3 @@
-import { ComponentModule } from './../../components/component.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,12 +5,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AboutPage } from './about.page';
+import { MyDripsPage } from './my-drips.page';
+import { ComponentModule } from 'src/app/components/component.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: AboutPage
+    component: MyDripsPage
   }
 ];
 
@@ -20,9 +20,9 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    ComponentModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ComponentModule
   ],
-  declarations: [AboutPage]
+  declarations: [MyDripsPage]
 })
-export class AboutPageModule {}
+export class MyDripsPageModule {}

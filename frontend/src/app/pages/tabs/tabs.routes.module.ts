@@ -17,11 +17,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'about',
+        path: 'my-drips',
         children: [
           {
             path: '',
-            loadChildren: '../about/about.module#AboutPageModule'
+            loadChildren: '../my-drips/my-drips.module#MyDripsPageModule'
           }
         ]
       },
