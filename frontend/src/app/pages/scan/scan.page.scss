@@ -5,19 +5,23 @@
   text-align: center;
   p {
     display: flex;
-    border: 2px solid blue;
+    // border: 2px solid blue;
     align-items: center;
     font-family: sans-serif;
     justify-content: center; // margin: auto;
     font-size: 16px;
     ion-icon {
       font-size: 64px;
-      color: var(--ion-color-tertiary);
+      color: var(--ion-color-secondary);
     }
     ion-button {
       --border-radius: 40px;
       --border: 2px solid var(--ion-color-secondary);
-      --background: var(--ion-color-light);
+      --background: linear-gradient(
+        to right,
+        var(--ion-color-secondary) 0%,
+        var(--ion-color-primary) 100%
+      );
     }
   }
 }
