@@ -9,5 +9,4 @@ export const DripSchema = new mongoose.Schema({
   quantita: mongoose.SchemaTypes.Number,
   scadenza: Date,
   temperaturaMax: mongoose.SchemaTypes.Number,
-  owner: mongoose.SchemaTypes.String,
 });
