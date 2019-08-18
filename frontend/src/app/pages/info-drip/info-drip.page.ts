@@ -10,6 +10,8 @@ import * as palette from 'google-palette';
 import { tap, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { properties } from './properties.enum';
+import { OwnersService } from 'src/app/providers/owners/owners.service';
+import { AuthService } from 'src/app/providers/auth/auth.service';
 
 @Component({
   selector: 'app-info-drip',
@@ -29,11 +31,13 @@ export class InfoDripPage implements OnInit {
   infoEntries: [string, any][];
   title: string;
   constructor(
-    private route: ActivatedRoute,
-    private dripService: DripsService,
-    private loadingController: LoadingController,
-    private router: Router,
-    private alertController: AlertController
+    private readonly route: ActivatedRoute,
+    private readonly dripService: DripsService,
+    private readonly ownerService: OwnersService,
+    private readonly loadingController: LoadingController,
+    private readonly router: Router,
+    private readonly authService: AuthService,
+    private readonly alertController: AlertController
   ) {}
 
   ngOnInit() {
@@ -42,7 +46,7 @@ export class InfoDripPage implements OnInit {
 
     this.loadingController.create({ message: 'Please wait...' }).then(res => {
       res.present();
-      const subscriber = this.dripService
+      this.dripService
         .getDrip(this.currentID)
         .pipe(
           tap(drip => {
@@ -50,6 +54,7 @@ export class InfoDripPage implements OnInit {
             this.infoEntries = this.getInfoEntries(drip);
             this.getCharts(drip);
             this.hidden = false;
+            this.updateOwnerShip();
           }),
           catchError(err => {
             if ((err.status = 404)) {
@@ -198,5 +203,12 @@ export class InfoDripPage implements OnInit {
 
   isHidden() {
     return this.hidden;
+  }
+
+  updateOwnerShip() {
+    // this.ownerService.addDripOwnership(this.authService.profile.name, this.currentID).subscribe()
+    this.ownerService
+      .addDripOwnership('prova@gmail.com', this.currentID)
+      .subscribe();
   }
 }

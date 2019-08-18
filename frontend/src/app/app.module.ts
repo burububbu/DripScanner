@@ -14,6 +14,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { DripsService } from './providers/drips/drips.service';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
+import { OwnersService } from './providers/owners/owners.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,7 +33,8 @@ import { IonicStorageModule } from '@ionic/storage';
     InAppBrowser,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     BarcodeScanner,
-    DripsService
+    DripsService,
+    OwnersService
   ],
   bootstrap: [AppComponent]
 })
