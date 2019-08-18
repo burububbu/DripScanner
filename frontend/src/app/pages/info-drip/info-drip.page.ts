@@ -103,7 +103,6 @@ export class InfoDripPage implements OnInit {
   getData(drip: Drip, tipo: string) {
     const label1 = [];
     const data1 = [];
-    console.log(drip);
     drip[tipo].forEach((v, k) => {
       label1.push(k), data1.push(v);
     });
@@ -192,6 +191,9 @@ export class InfoDripPage implements OnInit {
 
   goBack() {
     this.router.navigateByUrl('/tabs');
+  }
+  share() {
+    this.router.navigateByUrl(`/drip-sharing/${this.currentID}`);
   }
 
   isHidden() {

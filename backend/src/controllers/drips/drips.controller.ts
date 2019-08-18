@@ -1,5 +1,13 @@
-import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  NotFoundException,
+  Put,
+  Body,
+} from '@nestjs/common';
 import { DripsService } from '../../services/drips/drips.service';
+import { UpdateDripOwnerDto } from 'src/common/update-drip.owner.dto';
 
 @Controller('drips')
 export class DripsController {
@@ -13,5 +21,13 @@ export class DripsController {
     } else {
       return dripFound;
     }
+  }
+
+  @Put(':id')
+  async setOwner(
+    @Param('id') id,
+    @Body() updateDripOwnerDto: UpdateDripOwnerDto,
+  ) {
+    await this.dripsService.updateOwner(id, updateDripOwnerDto.name);
   }
 }

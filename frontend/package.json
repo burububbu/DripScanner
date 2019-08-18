@@ -39,6 +39,7 @@
     "cordova-sqlite-storage": "^3.2.0",
     "core-js": "^2.5.4",
     "google-palette": "^1.1.0",
+    "ngx-qrcode2": "0.0.9",
     "node-gyp": "^4.0.0",
     "phonegap-plugin-barcodescanner": "^8.0.1",
     "rxjs": "~6.5.1",

@@ -1,0 +1,10 @@
+.qrc-container {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  p {
+    text-align: center;
+    border-bottom: 2px solid var(--ion-color-primary);
+    font-size: 20px;
+  }
+}

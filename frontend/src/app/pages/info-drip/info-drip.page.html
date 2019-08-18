@@ -8,7 +8,7 @@
 <ion-content padding [hidden]="isHidden()">
   <ion-fab vertical="top" horizontal="end">
     <ion-fab-button color="primary">
-      <ion-icon name="share"></ion-icon>
+      <ion-icon name="share" (click)="share()"></ion-icon>
     </ion-fab-button>
   </ion-fab>
   <app-info-card [title]="'Informazioni'">
