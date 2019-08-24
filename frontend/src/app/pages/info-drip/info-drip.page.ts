@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DripsService } from 'src/app/providers/drips/drips.service';
-import { Drip } from 'src/app/providers/drips/drip';
+import { Drip } from 'src/app/models/drip';
 
 import { Chart } from 'chart.js';
 
@@ -59,9 +59,7 @@ export class InfoDripPage implements OnInit {
           catchError(err => {
             if ((err.status = 404)) {
               this.presentAlert(
-                `Non è stata trovata nessuna flebo con il codice ${
-                  this.currentID
-                }`
+                `Non è stata trovata nessuna flebo con il codice ${this.currentID}`
               );
             } else {
               this.presentAlert(err.message);

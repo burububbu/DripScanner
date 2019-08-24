@@ -15,11 +15,21 @@ export class OwnersService {
 
   // rimuove l'ownership della drip nel caso in cui questa sia di un altro utente
   async addDrip(username: string, code: string) {
-    const oldOwner = await this.ownerModel.findOne({ drips: code }).exec();
-    this.removeDrip(oldOwner.owner, code);
+    const oldOwner: Owner[] = await this.ownerModel
+      .aggregate([
+        {
+          $match: {
+            drips: code,
+          },
+        },
+      ])
+      .exec();
 
+    if (oldOwner.length !== 0) {
+      this.removeDrip(oldOwner[0].owner, code);
+    }
     return await this.ownerModel
-      .updateOne({ owner: username }, { $push: { drips: code } })
+      .updateOne({ owner: username }, { $addToSet: { drips: code } })
       .exec();
   }
 
