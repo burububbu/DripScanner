@@ -58,9 +58,6 @@ export class HeaderComponent implements OnInit {
     return this.authService.profile;
   }
 
-  backButtonHandler() {
-    this.backButtonClick.emit();
-  }
   homeButtonHandler() {
     this.router.navigateByUrl('/tabs');
   }

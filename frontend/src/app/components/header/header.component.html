@@ -9,7 +9,7 @@
       <ion-icon
         name="arrow-back"
         *ngIf="backButtonVisible"
-        (click)="backButtonHandler()"
+        (click)="backButtonClick.emit()"
       ></ion-icon>
       <span>{{ title }}</span>
 
