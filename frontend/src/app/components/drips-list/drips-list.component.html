@@ -1,0 +1,7 @@
+<div *ngFor="let el of list" class="list-element">
+  <div>{{ el }}</div>
+  <div class="list-element-icons">
+    <ion-icon name="open" (click)="openClick.emit(el)"></ion-icon>
+    <ion-icon name="share" (click)="shareClick.emit(el)"></ion-icon>
+  </div>
+</div>

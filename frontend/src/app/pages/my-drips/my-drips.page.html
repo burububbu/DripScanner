@@ -1,9 +1,10 @@
 <app-header title="My drips" [homeButtonVisible]="true"></app-header>
 
 <ion-content>
-  <div *ngFor="let el of myDrips">
-    <p>
-      {{ el }}
-    </p>
-  </div>
+  <app-drips-list
+    [list]="myDrips"
+    (shareClick)="handleShareClick($event)"
+    (openClick)="handleOpenClick($event)"
+  >
+  </app-drips-list>
 </ion-content>
