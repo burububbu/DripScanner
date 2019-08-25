@@ -7,18 +7,24 @@ const routes: Routes = [
   { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule' },
   {
     path: 'tabs',
-    loadChildren: './pages/tabs/tabs.module#TabsPageModule',
-    canActivate: [LoggedGuard]
+    loadChildren: './pages/tabs/tabs.module#TabsPageModule'
+     canActivate: [LoggedGuard]
   },
   {
     path: 'info-drip',
-    loadChildren: './pages/info-drip/info-drip.module#InfoDripPageModule',
-    canActivate: [LoggedGuard]
+    loadChildren: './pages/info-drip/info-drip.module#InfoDripPageModule'
+     canActivate: [LoggedGuard]
   },
   {
     path: 'my-drips',
-    loadChildren: './pages/my-drips/my-drips.module#MyDripsPageModule',
-    canActivate: [LoggedGuard]
+    loadChildren: './pages/my-drips/my-drips.module#MyDripsPageModule'
+     canActivate: [LoggedGuard]
+  },
+  {
+    path: 'drip-sharing',
+    loadChildren:
+      './pages/drip-sharing/drip-sharing.module#DripSharingPageModule'
+     canActivate: [LoggedGuard]
   }
 ];
 
