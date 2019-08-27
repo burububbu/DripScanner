@@ -1,27 +1,27 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { LoadingController, AlertController } from '@ionic/angular';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DripsService } from 'src/app/providers/drips/drips.service';
-import { Drip } from 'src/app/models/drip';
+import { Component, OnInit, ViewChild, AfterViewInit } from "@angular/core";
+import { LoadingController, AlertController } from "@ionic/angular";
+import { ActivatedRoute, Router } from "@angular/router";
+import { DripsService } from "src/app/providers/drips/drips.service";
+import { Drip } from "src/app/models/drip";
 
-import { Chart } from 'chart.js';
+import { Chart } from "chart.js";
 
-import * as palette from 'google-palette';
-import { tap, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
-import { properties } from './properties.enum';
-import { OwnersService } from 'src/app/providers/owners/owners.service';
-import { AuthService } from 'src/app/providers/auth/auth.service';
+import * as palette from "google-palette";
+import { tap, catchError } from "rxjs/operators";
+import { throwError } from "rxjs";
+import { properties } from "./properties.enum";
+import { OwnersService } from "src/app/providers/owners/owners.service";
+import { AuthService } from "src/app/providers/auth/auth.service";
 
 @Component({
-  selector: 'app-info-drip',
-  templateUrl: './info-drip.page.html',
-  styleUrls: ['./info-drip.page.scss']
+  selector: "app-info-drip",
+  templateUrl: "./info-drip.page.html",
+  styleUrls: ["./info-drip.page.scss"]
 })
 export class InfoDripPage implements OnInit {
-  @ViewChild('barCanvas') barCanvas;
-  @ViewChild('lineCanvas') lineCanvas;
-  @ViewChild('doughnutCanvas') doughnutCanvas;
+  @ViewChild("barCanvas") barCanvas;
+  @ViewChild("lineCanvas") lineCanvas;
+  @ViewChild("doughnutCanvas") doughnutCanvas;
   doughnutChart: any;
   barChart: any;
   lineChart: any;
@@ -41,10 +41,10 @@ export class InfoDripPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.currentID = this.route.snapshot.paramMap.get('id');
+    this.currentID = this.route.snapshot.paramMap.get("id");
     this.title = `Info about  ${this.currentID}`;
 
-    this.loadingController.create({ message: 'Please wait...' }).then(res => {
+    this.loadingController.create({ message: "Please wait..." }).then(res => {
       res.present();
       this.dripService
         .getDrip(this.currentID)
@@ -75,13 +75,13 @@ export class InfoDripPage implements OnInit {
 
   async presentAlert(msg: string) {
     const alert = await this.alertController.create({
-      header: 'Errore',
+      header: "Errore",
       message: msg,
       buttons: [
         {
-          text: 'ok',
+          text: "ok",
           handler: () => {
-            this.router.navigateByUrl('/tabs/scan');
+            this.router.navigateByUrl("/tabs/scan");
           }
         }
       ]
@@ -90,9 +90,9 @@ export class InfoDripPage implements OnInit {
   }
 
   private getCharts(drip: Drip) {
-    this.getDoughnutChart(drip, 'composizione');
-    this.getBarChart(drip, 'dosaggioEta');
-    this.getLineChart(drip, 'dosaggioPeso');
+    this.getDoughnutChart(drip, "composizione");
+    this.getBarChart(drip, "dosaggioEta");
+    this.getLineChart(drip, "dosaggioPeso");
   }
 
   getChart(context, chartType, data, options?) {
@@ -113,9 +113,9 @@ export class InfoDripPage implements OnInit {
   }
 
   getColours(numbers: number): [string] {
-    const arr = palette('tol-dv', numbers);
+    const arr = palette("tol-dv", numbers);
     const arr1 = arr.map(x => {
-      return '#' + x;
+      return "#" + x;
     });
     return arr1;
   }
@@ -124,21 +124,21 @@ export class InfoDripPage implements OnInit {
       labels: this.getData(drip, tipo)[0],
       datasets: [
         {
-          label: 'ml',
+          label: "ml",
           data: this.getData(drip, tipo)[1],
           backgroundColor: this.getColours(this.getData(drip, tipo)[1].length),
           borderColor: []
         }
       ]
     };
-    return this.getChart(this.doughnutCanvas.nativeElement, 'doughnut', data);
+    return this.getChart(this.doughnutCanvas.nativeElement, "doughnut", data);
   }
   getBarChart(drip: Drip, tipo: string) {
     const data = {
       labels: this.getData(drip, tipo)[0],
       datasets: [
         {
-          label: 'ml',
+          label: "ml",
           data: this.getData(drip, tipo)[1],
           backgroundColor: this.getColours(this.getData(drip, tipo)[1].length),
           borderColor: [],
@@ -159,7 +159,7 @@ export class InfoDripPage implements OnInit {
       }
     };
 
-    return this.getChart(this.barCanvas.nativeElement, 'bar', data, options);
+    return this.getChart(this.barCanvas.nativeElement, "bar", data, options);
   }
 
   getLineChart(drip: Drip, tipo: string) {
@@ -169,12 +169,12 @@ export class InfoDripPage implements OnInit {
         {
           label: tipo,
           fill: false,
-          borderColor: 'orange',
+          borderColor: "orange",
           data: this.getData(drip, tipo)[1]
         }
       ]
     };
-    return this.getChart(this.lineCanvas.nativeElement, 'line', data);
+    return this.getChart(this.lineCanvas.nativeElement, "line", data);
   }
 
   private getInfoEntries(drip: Drip) {
@@ -193,7 +193,7 @@ export class InfoDripPage implements OnInit {
   }
 
   goBack() {
-    this.router.navigateByUrl('/tabs');
+    this.router.navigateByUrl("/tabs");
   }
   share() {
     this.router.navigateByUrl(`/drip-sharing/${this.currentID}`);
@@ -204,9 +204,11 @@ export class InfoDripPage implements OnInit {
   }
 
   updateOwnerShip() {
-    // this.ownerService.addDripOwnership(this.authService.profile.name, this.currentID).subscribe()
     this.ownerService
-      .addDripOwnership('prova@gmail.com', this.currentID)
+      .addDripOwnership(this.authService.profile.name, this.currentID)
       .subscribe();
+    // this.ownerService
+    //   .addDripOwnership('prova@gmail.com', this.currentID)
+    //   .subscribe();
   }
 }
