@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { DripsService } from 'src/app/providers/drips/drips.service';
+import { AuthService } from 'src/app/providers/auth/auth.service';
 
 @Component({
   selector: 'app-scan',
@@ -12,6 +14,8 @@ export class ScanPage implements OnInit {
   constructor(
     private barcodeScanner: BarcodeScanner,
     private toastController: ToastController,
+    private dripService: DripsService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -42,5 +46,6 @@ export class ScanPage implements OnInit {
 
   goToExample() {
     this.router.navigateByUrl('/info-drip/121as8ed54tg');
+    // this.router.navigateByUrl('/info-drip/121as8eg'); drip non trovata
   }
 }

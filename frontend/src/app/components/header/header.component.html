@@ -2,22 +2,28 @@
   <ion-toolbar>
     <div>
       <ion-icon
+        name="home"
+        *ngIf="homeButtonVisible"
+        (click)="homeButtonHandler()"
+      ></ion-icon>
+      <ion-icon
         name="arrow-back"
         *ngIf="backButtonVisible"
-        (click)="backButtonHandler()"
+        (click)="backButtonClick.emit()"
       ></ion-icon>
       <span>{{ title }}</span>
+
+      <ion-chip
+        *ngIf="getProfile()"
+        (click)="presentAlert()"
+        color="light"
+        slot="end"
+      >
+        <!-- <ion-label>{{ getProfile().name }}</ion-label> -->
+        <ion-avatar>
+          <img [src]="getProfile().picture" />
+        </ion-avatar>
+      </ion-chip>
     </div>
-    <ion-chip
-      *ngIf="getProfile()"
-      (click)="presentAlert()"
-      color="light"
-      slot="end"
-    >
-      <ion-label>{{ getProfile().name }}</ion-label>
-      <ion-avatar>
-        <img [src]="getProfile().picture" />
-      </ion-avatar>
-    </ion-chip>
   </ion-toolbar>
 </ion-header>

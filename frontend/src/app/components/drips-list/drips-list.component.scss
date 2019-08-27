@@ -1,0 +1,14 @@
+.list-element {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-bottom: 2px solid var(--ion-color-primary);
+  font-size: 20px;
+  &-icons {
+    font-size: 32px;
+    ion-icon {
+      padding-left: 8px;
+    }
+  }
+}

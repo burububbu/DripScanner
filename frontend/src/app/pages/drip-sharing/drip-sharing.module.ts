@@ -1,4 +1,3 @@
-import { ComponentModule } from './../../components/component.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,12 +5,14 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AboutPage } from './about.page';
+import { DripSharingPage } from './drip-sharing.page';
+import { NgxQRCodeModule } from 'ngx-qrcode2';
+import { ComponentModule } from 'src/app/components/component.module';
 
 const routes: Routes = [
   {
-    path: '',
-    component: AboutPage
+    path: ':id',
+    component: DripSharingPage
   }
 ];
 
@@ -20,9 +21,10 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    NgxQRCodeModule,
     ComponentModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [AboutPage]
+  declarations: [DripSharingPage]
 })
-export class AboutPageModule {}
+export class DripSharingPageModule {}

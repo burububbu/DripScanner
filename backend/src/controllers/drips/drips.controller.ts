@@ -1,4 +1,11 @@
-import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  NotFoundException,
+  Put,
+  Body,
+} from '@nestjs/common';
 import { DripsService } from '../../services/drips/drips.service';
 
 @Controller('drips')

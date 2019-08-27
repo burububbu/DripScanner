@@ -1,0 +1,14 @@
+<app-header
+  title="Drip sharing"
+  [backButtonVisible]="true"
+  (backButtonClick)="goBack()"
+></app-header>
+
+<ion-content padding>
+  <ion-card *ngIf="createdCode">
+    <div class="qrc-container">
+      <p>SCAN IT!</p>
+      <ngx-qrcode [qrc-value]="createdCode"></ngx-qrcode>
+    </div>
+  </ion-card>
+</ion-content>

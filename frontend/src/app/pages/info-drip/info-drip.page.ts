@@ -2,14 +2,16 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DripsService } from 'src/app/providers/drips/drips.service';
-import { Drip } from 'src/app/providers/drips/drip';
+import { Drip } from 'src/app/models/drip';
 
 import { Chart } from 'chart.js';
 
 import * as palette from 'google-palette';
-import { tap, map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 import { properties } from './properties.enum';
+import { OwnersService } from 'src/app/providers/owners/owners.service';
+import { AuthService } from 'src/app/providers/auth/auth.service';
 
 @Component({
   selector: 'app-info-drip',
@@ -24,80 +26,68 @@ export class InfoDripPage implements OnInit {
   barChart: any;
   lineChart: any;
   currentID: string;
-  // currentDrip: Drip;
-  // currentDrip: Observable<Drip>;
+  hidden = true;
+
   infoEntries: [string, any][];
-  // isHidden = true;
   title: string;
   constructor(
-    private route: ActivatedRoute,
-    private dripService: DripsService,
-    private loadingController: LoadingController,
-    private router: Router,
-    private alertController: AlertController
+    private readonly route: ActivatedRoute,
+    private readonly dripService: DripsService,
+    private readonly ownerService: OwnersService,
+    private readonly loadingController: LoadingController,
+    private readonly router: Router,
+    private readonly authService: AuthService,
+    private readonly alertController: AlertController
   ) {}
 
   ngOnInit() {
     this.currentID = this.route.snapshot.paramMap.get('id');
     this.title = `Info about  ${this.currentID}`;
 
-    this.dripService
-      .getDrip(this.currentID)
-      .pipe(
-        tap(drip => {
-          console.log(drip);
-          this.infoEntries = this.getInfoEntries(drip);
-          this.getCharts(drip);
-        })
-      )
-      .subscribe();
-
-    // this.loadingController
-    //   .create({
-    //     message: 'Please wait...'
-    //   })
-    //   .then(res => {
-    //     res.present();
-    //     this.dripService.getDrip(this.currentID).subscribe(
-    //       drip => {
-    //         this.currentDrip = drip;
-    //         console.log(this.currentDrip);
-    //         this.infoEntries = this.getInfoEntries();
-    //         this.getCharts();
-    //         this.isHidden = false;
-    //       },
-    //       err => {
-    //         if ((err.status = 404)) {
-    //           this.presentAlert(
-    //             `Non è stata trovata nessuna flebo con il codice ${
-    //               this.currentID
-    //             }`
-    //           );
-    //         } else {
-    //           this.presentAlert(JSON.stringify(err));
-    //         }
-    //       }
-    //     );
-    //     res.dismiss();
-    //   });
+    this.loadingController.create({ message: 'Please wait...' }).then(res => {
+      res.present();
+      this.dripService
+        .getDrip(this.currentID)
+        .pipe(
+          tap(drip => {
+            console.log(drip);
+            this.infoEntries = this.getInfoEntries(drip);
+            this.getCharts(drip);
+            this.hidden = false;
+            this.updateOwnerShip();
+          }),
+          catchError(err => {
+            if ((err.status = 404)) {
+              this.presentAlert(
+                `Non è stata trovata nessuna flebo con il codice ${this.currentID}`
+              );
+            } else {
+              this.presentAlert(err.message);
+            }
+            return throwError(err);
+          })
+        )
+        .subscribe(_ => res.dismiss(), err => res.dismiss());
+    });
   }
 
   ionViewDidLoad() {}
-  // async presentAlert(msg: string) {
-  //   const alert = await this.alertController.create({
-  //     header: 'Error',
-  //     message: msg,
-  //     buttons: [
-  //       {
-  //         text: 'ok',
-  //         handler: () => {
-  //           this.router.navigateByUrl('/tabs/scan');
-  //         }
-  //       }
-  //     ]
-  //   });
-  //   await alert.present();
-  // }
+
+  async presentAlert(msg: string) {
+    const alert = await this.alertController.create({
+      header: 'Errore',
+      message: msg,
+      buttons: [
+        {
+          text: 'ok',
+          handler: () => {
+            this.router.navigateByUrl('/tabs/scan');
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
 
   private getCharts(drip: Drip) {
     this.getDoughnutChart(drip, 'composizione');
@@ -116,7 +106,6 @@ export class InfoDripPage implements OnInit {
   getData(drip: Drip, tipo: string) {
     const label1 = [];
     const data1 = [];
-    console.log(drip);
     drip[tipo].forEach((v, k) => {
       label1.push(k), data1.push(v);
     });
@@ -205,5 +194,19 @@ export class InfoDripPage implements OnInit {
 
   goBack() {
     this.router.navigateByUrl('/tabs');
+  }
+  share() {
+    this.router.navigateByUrl(`/drip-sharing/${this.currentID}`);
+  }
+
+  isHidden() {
+    return this.hidden;
+  }
+
+  updateOwnerShip() {
+    // this.ownerService.addDripOwnership(this.authService.profile.name, this.currentID).subscribe()
+    this.ownerService
+      .addDripOwnership('prova@gmail.com', this.currentID)
+      .subscribe();
   }
 }

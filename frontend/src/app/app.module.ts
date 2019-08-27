@@ -16,6 +16,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { IonicStorageModule } from "@ionic/storage";
 import { InterceptorService } from "./providers/interceptor/interceptor.service";
 import { FingerprintAIO } from "@ionic-native/fingerprint-aio/ngx";
+import { OwnersService } from './providers/owners/owners.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,7 +37,8 @@ import { FingerprintAIO } from "@ionic-native/fingerprint-aio/ngx";
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
     BarcodeScanner,
     DripsService,
-    FingerprintAIO
+    FingerprintAIO,
+    OwnersService
   ],
   bootstrap: [AppComponent]
 })
