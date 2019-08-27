@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Body, Put } from '@nestjs/common';
-import { OwnersService } from 'src/services/owners/owners.service';
-import { DripOwnerDto } from 'src/common/drip-owner.dto';
+import { OwnersService } from '../../services/owners/owners.service';
+import { DripOwnerDto } from '../../common/drip-owner.dto';
 
 @Controller('owners')
 export class OwnersController {
