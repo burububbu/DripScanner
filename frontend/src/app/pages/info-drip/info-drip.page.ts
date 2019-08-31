@@ -18,7 +18,7 @@ import { AuthService } from "src/app/providers/auth/auth.service";
   templateUrl: "./info-drip.page.html",
   styleUrls: ["./info-drip.page.scss"]
 })
-export class InfoDripPage implements OnInit {
+export class InfoDripPage implements OnInit, AfterViewInit {
   @ViewChild("barCanvas") barCanvas;
   @ViewChild("lineCanvas") lineCanvas;
   @ViewChild("doughnutCanvas") doughnutCanvas;
@@ -43,7 +43,11 @@ export class InfoDripPage implements OnInit {
   ngOnInit() {
     this.currentID = this.route.snapshot.paramMap.get("id");
     this.title = `Info about  ${this.currentID}`;
+  }
 
+  ionViewDidLoad() {}
+
+  ngAfterViewInit() {
     this.loadingController.create({ message: "Please wait..." }).then(res => {
       res.present();
       this.dripService
@@ -70,9 +74,6 @@ export class InfoDripPage implements OnInit {
         .subscribe(_ => res.dismiss(), err => res.dismiss());
     });
   }
-
-  ionViewDidLoad() {}
-
   async presentAlert(msg: string) {
     const alert = await this.alertController.create({
       header: "Errore",
@@ -198,11 +199,9 @@ export class InfoDripPage implements OnInit {
   share() {
     this.router.navigateByUrl(`/drip-sharing/${this.currentID}`);
   }
-
   isHidden() {
     return this.hidden;
   }
-
   updateOwnerShip() {
     this.ownerService
       .addDripOwnership(this.authService.profile.name, this.currentID)
