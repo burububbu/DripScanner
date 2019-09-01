@@ -18,7 +18,7 @@ import { AuthService } from "src/app/providers/auth/auth.service";
   templateUrl: "./info-drip.page.html",
   styleUrls: ["./info-drip.page.scss"]
 })
-export class InfoDripPage implements OnInit {
+export class InfoDripPage {
   @ViewChild("barCanvas") barCanvas;
   @ViewChild("lineCanvas") lineCanvas;
   @ViewChild("doughnutCanvas") doughnutCanvas;
@@ -38,11 +38,9 @@ export class InfoDripPage implements OnInit {
     private readonly router: Router,
     private readonly authService: AuthService,
     private readonly alertController: AlertController
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.currentID = this.route.snapshot.paramMap.get("id");
-    this.title = `Info about  ${this.currentID}`;
+    this.title = `Info about  ${this.currentID}`; // oppure lo metto nel willEnter?
   }
 
   ionViewDidEnter() {
