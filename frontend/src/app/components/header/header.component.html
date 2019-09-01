@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <div>
+      <ion-icon
+        name="home"
+        *ngIf="homeButtonVisible"
+        (click)="homeButtonHandler()"
+      ></ion-icon>
+      <ion-icon
+        name="arrow-back"
+        *ngIf="backButtonVisible"
+        (click)="backButtonClick.emit()"
+      ></ion-icon>
+      <span>{{ title }}</span>
+
+      <ion-chip
+        *ngIf="getProfile()"
+        (click)="presentAlert()"
+        color="light"
+        slot="end"
+      >
+        <ion-avatar>
+          <img [src]="getProfile().picture" />
+        </ion-avatar>
+      </ion-chip>
+    </div>
+  </ion-toolbar>
+</ion-header>

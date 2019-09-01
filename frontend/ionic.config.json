@@ -1,5 +1,7 @@
 {
-  "name": "drip-scanner",
-  "integrations": {},
+  "name": "frontend",
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
