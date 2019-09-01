@@ -18,7 +18,7 @@ import { AuthService } from "src/app/providers/auth/auth.service";
   templateUrl: "./info-drip.page.html",
   styleUrls: ["./info-drip.page.scss"]
 })
-export class InfoDripPage {
+export class InfoDripPage implements AfterViewInit {
   @ViewChild("barCanvas") barCanvas;
   @ViewChild("lineCanvas") lineCanvas;
   @ViewChild("doughnutCanvas") doughnutCanvas;
@@ -43,7 +43,7 @@ export class InfoDripPage {
     this.title = `Info about  ${this.currentID}`; // oppure lo metto nel willEnter?
   }
 
-  ionViewDidEnter() {
+  ngAfterViewInit() {
     this.loadingController.create({ message: "Please wait..." }).then(res => {
       res.present();
       this.dripService

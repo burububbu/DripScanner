@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterViewInit } from "@angular/core";
 import { OwnersService } from "src/app/providers/owners/owners.service";
 import { tap } from "rxjs/operators";
 import { Router } from "@angular/router";
@@ -10,7 +10,7 @@ import { AuthService } from "src/app/providers/auth/auth.service";
   templateUrl: "./my-drips.page.html",
   styleUrls: ["./my-drips.page.scss"]
 })
-export class MyDripsPage implements OnInit {
+export class MyDripsPage implements AfterViewInit {
   myDrips: string[];
   constructor(
     private ownersService: OwnersService,
@@ -19,9 +19,7 @@ export class MyDripsPage implements OnInit {
     private authService: AuthService
   ) {}
 
-  ngOnInit() {}
-
-  ionViewDidEnter() {
+  ngAfterViewInit() {
     this.loadingController.create({ message: "Please wait..." }).then(res => {
       res.present();
       this.getDrips();
