@@ -6,7 +6,7 @@ import { BooleanPipe } from '../../common/pipes/boolean.pipe';
 @Controller('owners')
 export class OwnersController {
   constructor(private readonly ownersService: OwnersService) {}
-  // ottiene lista drips associate ad un utente
+
   @Get()
   async getDrips(@User() user) {
     return await this.ownersService.getDripsList(user.sub);
