@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Param,
-  NotFoundException,
-  Put,
-  Body,
-} from '@nestjs/common';
+import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
 import { DripsService } from '../../services/drips/drips.service';
 
 @Controller('drips')
@@ -15,10 +8,9 @@ export class DripsController {
   @Get(':id')
   async getDrip(@Param() params) {
     const dripFound = await this.dripsService.findByID(params.id);
-    if (dripFound == null) {
-      throw new NotFoundException();
-    } else {
+    if (dripFound) {
       return dripFound;
     }
+    throw new NotFoundException();
   }
 }
