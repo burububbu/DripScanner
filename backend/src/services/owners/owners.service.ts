@@ -1,11 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Document } from 'mongoose';
-
-interface Owner extends Document {
-  owner: string;
-  drips: string[];
-}
+import { Model } from 'mongoose';
+import { Owner } from '../../common/owner.dto';
 
 @Injectable()
 export class OwnersService {
@@ -14,32 +10,69 @@ export class OwnersService {
   ) {}
 
   async getDripsList(username: string) {
-    return await this.ownerModel.findOne({ owner: username }).exec();
+    return (await this.ownerModel.findOne({ owner: username }).exec()).drips;
+  }
+
+  private async findDripOwner(code: string) {
+    return await this.ownerModel
+      .findOne({
+        'drips.id': code,
+      })
+      .exec();
   }
 
   // rimuove l'ownership della drip nel caso in cui questa sia di un altro utente
   async addDrip(username: string, code: string) {
-    const oldOwner: Owner[] = await this.ownerModel
-      .aggregate([
-        {
-          $match: {
-            drips: code,
-          },
-        },
-      ])
-      .exec();
-
-    if (oldOwner.length !== 0) {
-      this.removeDrip(oldOwner[0].owner, code);
+    const owner = await this.findDripOwner(code);
+    if (!owner) {
+      await this.pushDrip(username, code);
     }
+    throw new BadRequestException();
+  }
+
+  private async pushDrip(username: string, code: string) {
     return await this.ownerModel
-      .updateOne({ owner: username }, { $addToSet: { drips: code } })
+      .updateOne(
+        { owner: username },
+        { $push: { drips: { id: code, shareable: false } } },
+      )
       .exec();
   }
 
-  async removeDrip(username: string, code: string) {
-    return await this.ownerModel
-      .updateOne({ owner: username }, { $pullAll: { drips: [code] } })
+  async moveDrip(sub: string, code: string) {
+    const owner = await this.findDripOwner(code);
+    if (owner && owner.drips.find(s => s.id === code).shareable) {
+      await this.removeDripObject(owner, code);
+      await this.pushDrip(sub, code);
+    }
+  }
+
+  async setState(sub: any, dripCode: string, state: boolean) {
+    const owner = await this.ownerModel
+      .findOne({
+        // tslint:disable-next-line: object-literal-key-quotes
+        owner: sub,
+        'drips.id': dripCode,
+      })
       .exec();
+
+    if (owner) {
+      owner.drips.find(s => s.id === dripCode).shareable = state;
+      return await owner.save();
+    }
+    throw new BadRequestException();
+  }
+
+  async removeDrip(username: string, code: string) {
+    const owner = await this.findDripOwner(code);
+    if (owner && owner.owner === username) {
+      return await this.removeDripObject(owner, code);
+    }
+    throw new BadRequestException();
+  }
+
+  private async removeDripObject(owner: Owner, code: string) {
+    owner.drips.splice(owner.drips.findIndex(s => s.id === code), 1);
+    return await owner.save();
   }
 }
