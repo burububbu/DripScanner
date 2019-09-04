@@ -43,4 +43,17 @@ export class MyDripsPage {
   handleShareClick(e: Event) {
     this.router.navigateByUrl(`/drip-sharing/${e}`);
   }
+
+  async handleTrashClick(e) {
+    const res = await this.loadingController.create({
+      message: "Please wait..."
+    });
+    await res.present();
+    try {
+      await this.ownersService.removeDripOwnership(e).toPromise();
+      await this.getDrips();
+    } finally {
+      await res.dismiss();
+    }
+  }
 }
