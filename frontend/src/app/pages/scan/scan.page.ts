@@ -17,6 +17,8 @@ export class ScanPage {
     private router: Router
   ) {}
 
+  barcodeText: string;
+
   async createToast(errorMessage: string) {
     const toast = await this.toastController.create({
       message: errorMessage,
@@ -29,22 +31,28 @@ export class ScanPage {
   async scan() {
     try {
       const barcodeData = await this.barcodeScanner.scan();
-      if (barcodeData.text !== "") {
+      this.barcodeText = barcodeData.text;
+
+      if (this.barcodeText !== "") {
         if (barcodeData.format === "QR_CODE") {
           await this.ownerService
-            .moveDripOwnership(barcodeData.text)
+            .moveDripOwnership(this.barcodeText)
             .toPromise();
         } else {
           await this.ownerService
-            .addDripOwnership(barcodeData.text)
+            .addDripOwnership(this.barcodeText)
             .toPromise();
         }
-        this.router.navigateByUrl("/info-drip/" + barcodeData.text);
       }
     } catch (err) {
-      this.createToast("Error");
-      console.log("Err: ", err);
+      if (err.status === 403) {
+        this.createToast(err.error.message);
+      }
+      if (err.status === 404) {
+        this.createToast(err.error.message);
+      }
     }
+    this.router.navigateByUrl("/info-drip/" + this.barcodeText);
   }
 
   goToExample() {
