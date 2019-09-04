@@ -10,6 +10,8 @@ export class DripsListComponent implements OnInit {
   @Input() list: DripDeclaration[];
   @Output() shareClick: EventEmitter<string> = new EventEmitter<string>();
   @Output() openClick: EventEmitter<string> = new EventEmitter<string>();
+  @Output() trashClick: EventEmitter<string> = new EventEmitter<string>();
+
   constructor() {}
 
   ngOnInit() {}
