@@ -72,7 +72,6 @@ export class OwnersService {
 
   async moveDrip(sub: string, code: string) {
     const owner = await this.findDripOwner(code);
-
     if (!owner) {
       throw new NotFoundException('The drip doesn\'t have any owner');
     }
