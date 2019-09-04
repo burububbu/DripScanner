@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { LoadingController, AlertController } from "@ionic/angular";
 import { ActivatedRoute, Router } from "@angular/router";
 import { DripsService } from "src/app/providers/drips/drips.service";
@@ -7,25 +7,22 @@ import { Drip } from "src/app/models/drip";
 import { Chart } from "chart.js";
 
 import * as palette from "google-palette";
-import { tap, catchError } from "rxjs/operators";
 import { throwError } from "rxjs";
 import { properties } from "./properties.enum";
-import { OwnersService } from "src/app/providers/owners/owners.service";
-import { AuthService } from "src/app/providers/auth/auth.service";
 
 @Component({
   selector: "app-info-drip",
   templateUrl: "./info-drip.page.html",
   styleUrls: ["./info-drip.page.scss"]
 })
-export class InfoDripPage implements AfterViewInit {
+export class InfoDripPage {
   @ViewChild("barCanvas") barCanvas;
   @ViewChild("lineCanvas") lineCanvas;
   @ViewChild("doughnutCanvas") doughnutCanvas;
   doughnutChart: any;
   barChart: any;
   lineChart: any;
-  currentID: string;
+  dripCode: string;
   hidden = true;
 
   infoEntries: [string, any][];
@@ -33,42 +30,36 @@ export class InfoDripPage implements AfterViewInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly dripService: DripsService,
-    private readonly ownerService: OwnersService,
     private readonly loadingController: LoadingController,
     private readonly router: Router,
-    private readonly authService: AuthService,
     private readonly alertController: AlertController
   ) {
-    this.currentID = this.route.snapshot.paramMap.get("id");
-    this.title = `Info about  ${this.currentID}`; // oppure lo metto nel willEnter?
+    this.dripCode = this.route.snapshot.paramMap.get("id");
+    this.title = `Info about  ${this.dripCode}`;
   }
 
-  ngAfterViewInit() {
-    this.loadingController.create({ message: "Please wait..." }).then(res => {
-      res.present();
-      this.dripService
-        .getDrip(this.currentID)
-        .pipe(
-          tap(drip => {
-            console.log(drip);
-            this.infoEntries = this.getInfoEntries(drip);
-            this.getCharts(drip);
-            this.hidden = false;
-            this.updateOwnerShip();
-          }),
-          catchError(err => {
-            if ((err.status = 404)) {
-              this.presentAlert(
-                `Non è stata trovata nessuna flebo con il codice ${this.currentID}`
-              );
-            } else {
-              this.presentAlert(err.message);
-            }
-            return throwError(err);
-          })
-        )
-        .subscribe(_ => res.dismiss(), err => res.dismiss());
+  async ionViewDidEnter() {
+    const res = await this.loadingController.create({
+      message: "Please wait..."
     });
+    res.present();
+    try {
+      const drip = await this.dripService.getDrip(this.dripCode).toPromise();
+      this.infoEntries = this.getInfoEntries(drip);
+      this.getCharts(drip);
+      this.hidden = false;
+    } catch (err) {
+      if ((err.status = 404)) {
+        await this.presentAlert(
+          `Non è stata trovata nessuna flebo con il codice ${this.dripCode}`
+        );
+      } else {
+        await this.presentAlert(err.message);
+      }
+      return throwError(err);
+    } finally {
+      res.dismiss();
+    }
   }
 
   async presentAlert(msg: string) {
@@ -191,17 +182,13 @@ export class InfoDripPage implements AfterViewInit {
   }
 
   goBack() {
+    // TODO
     this.router.navigateByUrl("/tabs");
   }
   share() {
-    this.router.navigateByUrl(`/drip-sharing/${this.currentID}`);
+    this.router.navigateByUrl(`/drip-sharing/${this.dripCode}`);
   }
-  isHidden() {
-    return this.hidden;
-  }
-  updateOwnerShip() {
-    this.ownerService
-      .addDripOwnership(this.authService.profile.name, this.currentID)
-      .subscribe();
-  }
+  // async updateOwnerShip() {
+  //   await this.ownerService.addDripOwnership(this.dripCode).toPromise();
+  // }
 }

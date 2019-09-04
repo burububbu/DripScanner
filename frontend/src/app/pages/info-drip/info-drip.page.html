@@ -5,13 +5,14 @@
 >
 </app-header>
 
-<ion-content padding [hidden]="isHidden()">
+<ion-content padding [style.display]="hidden ? 'none' : 'inherit'">
   <ion-fab vertical="top" horizontal="end">
     <ion-fab-button color="primary">
       <ion-icon name="share" (click)="share()"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-  <app-info-card [title]="'Informazioni'">
+
+  <app-info-card title="Informazioni">
     <ion-item *ngFor="let element of infoEntries">
       <ion-label>
         <span class="info-name">{{ element[0] }}</span
@@ -21,15 +22,15 @@
     </ion-item>
   </app-info-card>
 
-  <app-info-card [title]="'Composizione'">
+  <app-info-card title="Composizione">
     <canvas #doughnutCanvas></canvas>
   </app-info-card>
 
-  <app-info-card [title]="'Dosaggio età'">
+  <app-info-card title="Dosaggio età">
     <canvas #barCanvas></canvas>
   </app-info-card>
 
-  <app-info-card [title]="'Dosaggio Peso'">
+  <app-info-card title="Dosaggio Peso">
     <canvas #lineCanvas></canvas>
   </app-info-card>
 </ion-content>

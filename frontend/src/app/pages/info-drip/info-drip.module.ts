@@ -1,17 +1,21 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { Routes, RouterModule } from "@angular/router";
 
-import { IonicModule } from '@ionic/angular';
+import { IonicModule } from "@ionic/angular";
 
-import { InfoDripPage } from './info-drip.page';
-import { DripsService } from 'src/app/providers/drips/drips.service';
-import { ComponentModule } from 'src/app/components/component.module';
+import { InfoDripPage } from "./info-drip.page";
+import { DripsService } from "src/app/providers/drips/drips.service";
+import { ComponentModule } from "src/app/components/component.module";
 
 const routes: Routes = [
   {
-    path: ':id',
+    path: "",
+    component: InfoDripPage
+  },
+  {
+    path: ":id",
     component: InfoDripPage
   }
 ];
