@@ -11,9 +11,7 @@ export class DripsService {
     return await this.dripModel.findOne({ codice: id }).exec();
   }
 
-  async updateOwner(id: string, name: string) {
-    return await this.dripModel
-      .updateOne({ codice: id }, { $set: { owner: name } })
-      .exec();
+  async checkExistence(id: string) {
+    return await this.dripModel.count({ codice: id }).exec();
   }
 }
