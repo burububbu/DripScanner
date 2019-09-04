@@ -1,4 +1,9 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Owner } from '../../common/owner.dto';
@@ -10,7 +15,14 @@ export class OwnersService {
   ) {}
 
   async getDripsList(username: string) {
-    return (await this.ownerModel.findOne({ owner: username }).exec()).drips;
+    try {
+      return (await this.ownerModel.findOne({ owner: username }).exec()).drips;
+    } catch (err) {
+      if (err.status === 404) {
+        throw new NotFoundException('Drip is already assigned.');
+      }
+      throw new InternalServerErrorException('', JSON.stringify(err));
+    }
   }
 
   private async findDripOwner(code: string) {
@@ -27,24 +39,38 @@ export class OwnersService {
     if (!owner) {
       await this.pushDrip(username, code);
     }
-    throw new BadRequestException();
+    throw new ForbiddenException('Drip is already assigned.');
   }
 
   private async pushDrip(username: string, code: string) {
-    return await this.ownerModel
-      .updateOne(
-        { owner: username },
-        { $push: { drips: { id: code, shareable: false } } },
-      )
-      .exec();
+    try {
+      return await this.ownerModel
+        .updateOne(
+          { owner: username },
+          { $push: { drips: { id: code, shareable: false } } },
+        )
+        .exec();
+    } catch (err) {
+      if (err.status === 404) {
+        throw new NotFoundException(`Username "${username}" not found.`);
+      }
+      throw new InternalServerErrorException(
+        'Unexpected error',
+        JSON.stringify(err),
+      );
+    }
   }
 
   async moveDrip(sub: string, code: string) {
     const owner = await this.findDripOwner(code);
-    if (owner && owner.drips.find(s => s.id === code).shareable) {
+    if (!owner) {
+      throw new NotFoundException('The drip doesn\'t have any owner');
+    }
+    if (owner.drips.find(s => s.id === code).shareable) {
       await this.removeDripObject(owner, code);
       await this.pushDrip(sub, code);
     }
+    throw new ForbiddenException('The drip is not shareable');
   }
 
   async setState(sub: any, dripCode: string, state: boolean) {
@@ -60,15 +86,18 @@ export class OwnersService {
       owner.drips.find(s => s.id === dripCode).shareable = state;
       return await owner.save();
     }
-    throw new BadRequestException();
+    throw new NotFoundException();
   }
 
   async removeDrip(username: string, code: string) {
     const owner = await this.findDripOwner(code);
-    if (owner && owner.owner === username) {
+    if (!owner) {
+      throw new NotFoundException('The drip doesn\'t have any owner');
+    }
+    if (owner.owner === username) {
       return await this.removeDripObject(owner, code);
     }
-    throw new BadRequestException();
+    throw new ForbiddenException('You cannot remove the another user\'s drip');
   }
 
   private async removeDripObject(owner: Owner, code: string) {
