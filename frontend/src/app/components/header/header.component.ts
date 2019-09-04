@@ -14,6 +14,7 @@ export class HeaderComponent implements OnInit {
   @Input() title = "Drip Scanner";
   @Input() backButtonVisible = false;
   @Input() homeButtonVisible = false;
+  @Input() showProfile = true;
 
   constructor(
     private readonly authService: AuthService,

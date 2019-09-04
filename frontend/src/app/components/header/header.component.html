@@ -14,7 +14,7 @@
       <span>{{ title }}</span>
 
       <ion-chip
-        *ngIf="getProfile()"
+        *ngIf="showProfile && getProfile()"
         (click)="presentAlert()"
         color="light"
         slot="end"

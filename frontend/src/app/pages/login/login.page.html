@@ -1,16 +1,22 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header title="" [showProfile]="false"></app-header>
+
 <ion-content padding>
-  <h1 style="text-align: center; font-weight: bolder">
-    Please Login
-  </h1>
-  <ion-button expand="full" size="large" shape="round" (click)="login()">
-    Login
-  </ion-button>
-  <ion-button
+  <div class="div-container">
+    <p>
+      <ion-img src="assets/icon/iconAndName.png"></ion-img>
+    </p>
+    <p>
+      WELCOME
+    </p>
+    <p>
+      <ion-button expand="block" (click)="login()">
+        LOGIN
+      </ion-button>
+    </p>
+  </div>
+</ion-content>
+
+<!-- <ion-button
     expand="full"
     size="large"
     shape="round"
@@ -18,4 +24,4 @@
   >
     Fingerprint Login
   </ion-button>
-</ion-content>
+</ion-content> -->
