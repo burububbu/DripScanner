@@ -20,15 +20,7 @@ export class MyDripsPage {
   ) {}
 
   async ionViewDidEnter() {
-    const res = await this.loadingController.create({
-      message: "Please wait..."
-    });
-    await res.present();
-    try {
-      await this.getDrips();
-    } finally {
-      await res.dismiss();
-    }
+    await this.loadDrips();
   }
 
   async getDrips() {
@@ -45,12 +37,16 @@ export class MyDripsPage {
   }
 
   async handleTrashClick(e) {
+    await this.ownersService.removeDripOwnership(e).toPromise();
+    await this.loadDrips();
+  }
+
+  async loadDrips() {
     const res = await this.loadingController.create({
       message: "Please wait..."
     });
     await res.present();
     try {
-      await this.ownersService.removeDripOwnership(e).toPromise();
       await this.getDrips();
     } finally {
       await res.dismiss();

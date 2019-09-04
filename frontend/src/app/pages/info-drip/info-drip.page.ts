@@ -7,7 +7,6 @@ import { Drip } from "src/app/models/drip";
 import { Chart } from "chart.js";
 
 import * as palette from "google-palette";
-import { throwError } from "rxjs";
 import { properties } from "./properties.enum";
 
 @Component({
@@ -53,10 +52,7 @@ export class InfoDripPage {
         await this.presentAlert(
           `Non è stata trovata nessuna flebo con il codice ${this.dripCode}`
         );
-      } else {
-        await this.presentAlert(err.message);
       }
-      return throwError(err);
     } finally {
       res.dismiss();
     }
@@ -181,14 +177,7 @@ export class InfoDripPage {
       });
   }
 
-  goBack() {
-    // TODO
-    this.router.navigateByUrl("/tabs");
-  }
   share() {
     this.router.navigateByUrl(`/drip-sharing/${this.dripCode}`);
   }
-  // async updateOwnerShip() {
-  //   await this.ownerService.addDripOwnership(this.dripCode).toPromise();
-  // }
 }

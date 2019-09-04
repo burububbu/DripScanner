@@ -11,8 +11,7 @@ export class DripSharingPage {
   createdCode = null;
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly ownerService: OwnersService,
-    private readonly router: Router
+    private readonly ownerService: OwnersService
   ) {
     this.createdCode = this.route.snapshot.paramMap.get("id");
   }
@@ -22,10 +21,10 @@ export class DripSharingPage {
   }
 
   async ionViewWillLeave() {
-    await this.ownerService.setShareable(this.createdCode, false).toPromise();
-  }
-
-  goBack() {
-    this.router.navigateByUrl("/tabs");
+    try {
+      await this.ownerService.setShareable(this.createdCode, false).toPromise();
+    } catch (err) {
+      console.log(err.error.message);
+    }
   }
 }
