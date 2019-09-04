@@ -122,7 +122,6 @@ export class AuthService {
    * allows you to log in to the application after making all the necessary checks
    */
   async login() {
-    console.log("setting options");
     let options = [
       "location=no",
       "hidenavigationbuttons=yes",
