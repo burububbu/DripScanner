@@ -1,37 +1,31 @@
-import { Component, OnInit, AfterViewInit } from "@angular/core";
-import { OwnersService } from "src/app/providers/owners/owners.service";
-import { tap } from "rxjs/operators";
+import { Component } from "@angular/core";
+import {
+  OwnersService,
+  DripDeclaration
+} from "src/app/providers/owners/owners.service";
 import { Router } from "@angular/router";
 import { LoadingController } from "@ionic/angular";
-import { AuthService } from "src/app/providers/auth/auth.service";
 
 @Component({
   selector: "app-my-drips",
   templateUrl: "./my-drips.page.html",
   styleUrls: ["./my-drips.page.scss"]
 })
-export class MyDripsPage implements AfterViewInit {
-  myDrips: string[];
+export class MyDripsPage {
+  myDrips: DripDeclaration[];
   constructor(
     private ownersService: OwnersService,
     private router: Router,
-    private loadingController: LoadingController,
-    private authService: AuthService
+    private loadingController: LoadingController
   ) {}
 
-  ngAfterViewInit() {
-    this.loadingController.create({ message: "Please wait..." }).then(res => {
-      res.present();
-      this.getDrips();
-      res.dismiss();
-    });
+  async ionViewDidEnter() {
+    await this.loadDrips();
   }
 
-  getDrips() {
-    this.ownersService
-      .getDrips(this.authService.profile.name)
-      .pipe(tap((drips: string[]) => (this.myDrips = drips)))
-      .subscribe(() => console.log(this.myDrips));
+  async getDrips() {
+    const drips = await this.ownersService.getDrips().toPromise();
+    this.myDrips = [...drips];
   }
 
   handleOpenClick(e: Event) {
@@ -40,5 +34,22 @@ export class MyDripsPage implements AfterViewInit {
 
   handleShareClick(e: Event) {
     this.router.navigateByUrl(`/drip-sharing/${e}`);
+  }
+
+  async handleTrashClick(e) {
+    await this.ownersService.removeDripOwnership(e).toPromise();
+    await this.loadDrips();
+  }
+
+  async loadDrips() {
+    const res = await this.loadingController.create({
+      message: "Please wait..."
+    });
+    await res.present();
+    try {
+      await this.getDrips();
+    } finally {
+      await res.dismiss();
+    }
   }
 }

@@ -1,24 +1,26 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { AuthService } from 'src/app/providers/auth/auth.service';
-import { AlertController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { AuthService } from "src/app/providers/auth/auth.service";
+import { AlertController } from "@ionic/angular";
+import { Router } from "@angular/router";
+import { Location } from "@angular/common";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  selector: "app-header",
+  templateUrl: "./header.component.html",
+  styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent implements OnInit {
   // tslint:disable-next-line: no-input-rename
-  @Input() title = 'Drip Scanner';
+  @Input() title = "Drip Scanner";
   @Input() backButtonVisible = false;
   @Input() homeButtonVisible = false;
-  @Output() backButtonClick = new EventEmitter<unknown>();
+  @Input() showProfile = true;
 
   constructor(
     private readonly authService: AuthService,
     private readonly alertController: AlertController,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly location: Location
   ) {}
   /**
    *
@@ -26,16 +28,16 @@ export class HeaderComponent implements OnInit {
 
   async presentAlert() {
     return await (await this.alertController.create({
-      header: 'Logout',
-      message: 'Are you sure?',
+      header: "Logout",
+      message: "Are you sure?",
       buttons: [
         {
-          text: 'No',
-          role: 'no'
+          text: "No",
+          role: "no"
         },
         {
-          text: 'Yes',
-          role: 'yes',
+          text: "Yes",
+          role: "yes",
           handler: () => {
             this.logout();
           }
@@ -59,6 +61,9 @@ export class HeaderComponent implements OnInit {
   }
 
   homeButtonHandler() {
-    this.router.navigateByUrl('/tabs');
+    this.router.navigateByUrl("/tabs");
+  }
+  backButtonHandler() {
+    this.location.back();
   }
 }

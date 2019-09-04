@@ -1,0 +1,24 @@
+.div-container {
+  height: 100%;
+  overflow: auto;
+  display: block;
+  text-align: center;
+  p {
+    display: flex;
+    // border: 2px solid blue;
+    align-items: center;
+    font-family: sans-serif;
+    justify-content: center;
+    font-size: 24px;
+
+    ion-button {
+      --border-radius: 40px;
+      --border: 2px solid var(--ion-color-secondary);
+      --background: linear-gradient(
+        to right,
+        var(--ion-color-secondary) 0%,
+        var(--ion-color-primary) 100%
+      );
+    }
+  }
+}

@@ -1,10 +1,15 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { RouterModule, Routes, PreloadAllModules } from "@angular/router";
 import { LoggedGuard } from "./guards/logged.guard";
+import { NotLoggedGuard } from "./guards/not-logged.guard";
 
 const routes: Routes = [
-  { path: "", redirectTo: "tabs", pathMatch: "full" },
-  { path: "login", loadChildren: "./pages/login/login.module#LoginPageModule" },
+  { path: "", redirectTo: "login", pathMatch: "full" },
+  {
+    path: "login",
+    loadChildren: "./pages/login/login.module#LoginPageModule",
+    canActivate: [NotLoggedGuard]
+  },
   {
     path: "tabs",
     loadChildren: "./pages/tabs/tabs.module#TabsPageModule",
@@ -29,7 +34,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

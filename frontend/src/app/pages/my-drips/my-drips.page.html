@@ -1,10 +1,11 @@
-<app-header title="My drips" [homeButtonVisible]="true"></app-header>
+<app-header title="My drips" [backButtonVisible]="true"></app-header>
 
 <ion-content>
   <app-drips-list
     [list]="myDrips"
     (shareClick)="handleShareClick($event)"
     (openClick)="handleOpenClick($event)"
+    (trashClick)="handleTrashClick($event)"
   >
   </app-drips-list>
 </ion-content>

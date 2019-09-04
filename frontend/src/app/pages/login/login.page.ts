@@ -18,17 +18,17 @@ export class LoginPage implements OnInit {
     this.authService.login();
   }
 
-  fingerprintLogin() {
-    this.faio
-      .show({
-        clientId: "Fingerprint-Demo",
-        clientSecret: "password"
-      })
-      .then(result => {
-        this.authService.login();
-      })
-      .catch(err => {
-        console.log("Err: ", err);
-      });
-  }
+  // fingerprintLogin() {
+  //   this.faio
+  //     .show({
+  //       clientId: "Fingerprint-Demo",
+  //       clientSecret: "password"
+  //     })
+  //     .then(result => {
+  //       this.authService.login();
+  //     })
+  //     .catch(err => {
+  //       console.log("Err: ", err);
+  //     });
+  // }
 }

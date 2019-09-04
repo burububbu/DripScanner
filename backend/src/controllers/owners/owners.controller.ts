@@ -1,31 +1,38 @@
-import { Controller, Get, Param, Body, Put } from '@nestjs/common';
+import { Controller, Get, Param, Put } from '@nestjs/common';
 import { OwnersService } from '../../services/owners/owners.service';
-import { DripOwnerDto } from '../../common/drip-owner.dto';
+import { User } from '../../common/decorators/user.decorator';
+import { BooleanPipe } from '../../common/pipes/boolean.pipe';
 
 @Controller('owners')
 export class OwnersController {
   constructor(private readonly ownersService: OwnersService) {}
-  // ottiene lista drips associate ad un utente
-  @Get(':username')
-  async getDrips(@Param('username') username) {
-    const owner = await this.ownersService.getDripsList(username);
-    const drips = owner.drips;
-    return drips;
+
+  @Get()
+  async getDrips(@User() user) {
+    return await this.ownersService.getDripsList(user.sub);
   }
 
-  @Put('addDrip/:username')
-  async addDrip(
-    @Param('username') username,
-    @Body() dripOwnerDto: DripOwnerDto,
-  ) {
-    await this.ownersService.addDrip(username, dripOwnerDto.code);
+  @Put('addDrip/:dripCode')
+  async addDrip(@User() user, @Param('dripCode') dripCode: string) {
+    await this.ownersService.addDrip(user.sub, dripCode);
   }
 
-  @Put('removeDrip/:username')
-  async removeDrip(
-    @Param('username') username,
-    @Body() dripOwnerDto: DripOwnerDto,
+  @Put('moveDrip/:dripCode')
+  async moveDrip(@User() user, @Param('dripCode') dripCode: string) {
+    await this.ownersService.moveDrip(user.sub, dripCode);
+  }
+
+  @Put('setShareable/:dripCode/:state')
+  async setShareable(
+    @User() user,
+    @Param('dripCode') dripCode: string,
+    @Param('state', new BooleanPipe()) state: boolean,
   ) {
-    await this.ownersService.removeDrip(username, dripOwnerDto.code);
+    await this.ownersService.setState(user.sub, dripCode, state);
+  }
+
+  @Put('removeDrip/:dripCode')
+  async removeDrip(@User() user, @Param('dripCode') dripCode: string) {
+    await this.ownersService.removeDrip(user.sub, dripCode);
   }
 }

@@ -9,12 +9,12 @@
       <ion-icon
         name="arrow-back"
         *ngIf="backButtonVisible"
-        (click)="backButtonClick.emit()"
+        (click)="backButtonHandler()"
       ></ion-icon>
       <span>{{ title }}</span>
 
       <ion-chip
-        *ngIf="getProfile()"
+        *ngIf="showProfile && getProfile()"
         (click)="presentAlert()"
         color="light"
         slot="end"
