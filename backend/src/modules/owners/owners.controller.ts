@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Put } from '@nestjs/common';
-import { OwnersService } from '../../services/owners/owners.service';
+import { OwnersService } from './owners.service';
 import { User } from '../../common/decorators/user.decorator';
 import { BooleanPipe } from '../../common/pipes/boolean.pipe';
 

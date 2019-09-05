@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Owner } from '../../common/owner.dto';
+import { Owner } from '../../common/dtos/owner.dto';
 import { DripsService } from '../drips/drips.service';
 
 @Injectable()
@@ -73,7 +73,7 @@ export class OwnersService {
   async moveDrip(sub: string, code: string) {
     const owner = await this.findDripOwner(code);
     if (!owner) {
-      throw new NotFoundException('The drip doesn\'t have any owner');
+      throw new NotFoundException("The drip doesn't have any owner");
     }
     if (owner.drips.find(s => s.id === code).shareable === false) {
       throw new ForbiddenException('The drip is not shareable');
@@ -93,7 +93,7 @@ export class OwnersService {
       .exec();
 
     if (!owner) {
-      throw new NotFoundException('Drip doesn\'t have any owner');
+      throw new NotFoundException("Drip doesn't have any owner");
     }
     owner.drips.find(s => s.id === dripCode).shareable = state;
     return await owner.save();
@@ -102,12 +102,12 @@ export class OwnersService {
   async removeDrip(username: string, code: string) {
     const owner = await this.findDripOwner(code);
     if (!owner) {
-      throw new NotFoundException('The drip doesn\'t have any owner');
+      throw new NotFoundException("The drip doesn't have any owner");
     }
     if (owner.owner === username) {
       return await this.removeDripObject(owner, code);
     }
-    throw new ForbiddenException('You cannot remove the another user\'s drip');
+    throw new ForbiddenException("You cannot remove the another user's drip");
   }
 
   private async removeDripObject(owner: Owner, code: string) {
