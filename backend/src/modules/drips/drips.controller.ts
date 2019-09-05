@@ -7,14 +7,10 @@ export class DripsController {
 
   @Get(':id')
   async getDrip(@Param() params) {
-    try {
-      const dripFound = await this.dripsService.findByID(params.id);
-      if (dripFound) {
-        return dripFound;
-      }
-      throw new NotFoundException();
-    } catch (err) {
-      console.log(err);
+    const dripFound = await this.dripsService.findByID(params.id);
+    if (dripFound) {
+      return dripFound;
     }
+    throw new NotFoundException();
   }
 }

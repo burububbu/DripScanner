@@ -1,7 +1,15 @@
-import { Controller, Get, Param, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Put,
+  Query,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { OwnersService } from './owners.service';
 import { User } from '../../common/decorators/user.decorator';
 import { BooleanPipe } from '../../common/pipes/boolean.pipe';
+import { NumberPipe } from '../../common/pipes/number.pipe';
 
 @Controller('owners')
 export class OwnersController {
@@ -27,8 +35,14 @@ export class OwnersController {
     @User() user,
     @Param('dripCode') dripCode: string,
     @Param('state', new BooleanPipe()) state: boolean,
+    @Query('timeoutSeconds', new NumberPipe()) timeoutSeconds?: number,
   ) {
-    await this.ownersService.setState(user.sub, dripCode, state);
+    await this.ownersService.setState(
+      user.sub,
+      dripCode,
+      state,
+      isNaN(timeoutSeconds) ? undefined : timeoutSeconds,
+    );
   }
 
   @Put('removeDrip/:dripCode')

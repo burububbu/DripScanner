@@ -11,7 +11,7 @@ export class DripsService {
     return await this.dripModel.findOne({ codice: id }).exec();
   }
 
-  async checkExistence(id: string) {
-    return await this.dripModel.count({ codice: id }).exec();
+  async exists(id: string) {
+    return (await this.dripModel.countDocuments({ codice: id }).exec()) > 0;
   }
 }

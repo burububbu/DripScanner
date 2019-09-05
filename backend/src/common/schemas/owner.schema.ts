@@ -1,11 +1,12 @@
-import * as mongoose from 'mongoose';
+import { SchemaTypes, Schema } from 'mongoose';
 
-export const DripSchema = new mongoose.Schema({
-  id: mongoose.SchemaTypes.String,
-  shareable: mongoose.SchemaTypes.Boolean,
+export const DripSchema = new Schema({
+  id: SchemaTypes.String,
+  shareable: SchemaTypes.Boolean,
+  expireDate: SchemaTypes.Date,
 });
 
-export const OwnerSchema = new mongoose.Schema({
-  owner: mongoose.SchemaTypes.String,
+export const OwnerSchema = new Schema({
+  owner: SchemaTypes.String,
   drips: [DripSchema],
 });

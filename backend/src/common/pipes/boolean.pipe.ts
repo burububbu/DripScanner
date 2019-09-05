@@ -9,7 +9,7 @@ import {
 export class BooleanPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     if (value !== 'false' && value !== 'true') {
-      throw new BadRequestException();
+      throw new BadRequestException('The argument is not a boolean');
     }
     return value === 'true';
   }

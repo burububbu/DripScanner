@@ -1,9 +1,5 @@
 import { Document } from 'mongoose';
-
-export interface Drip extends Document {
-  id: string;
-  shareable: boolean;
-}
+import { Drip } from './drip.dto';
 
 export interface Owner extends Document {
   owner: string;
