@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Michele Celozzi",
   "license": "MIT",
   "engines": {
     "node": "10.16.0"
