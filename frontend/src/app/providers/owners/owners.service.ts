@@ -2,11 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "src/environments/environment.prod";
 import { Observable } from "rxjs";
-
-export interface DripDeclaration {
-  id: string;
-  shareable: boolean;
-}
+import { DripDeclaration } from "src/app/models/drip-declaration";
 
 @Injectable({
   providedIn: "root"
@@ -41,9 +37,9 @@ export class OwnersService {
     );
   }
 
-  public setShareable(code: string, state: boolean) {
+  public setShareable(code: string, state: boolean, timeoutSeconds?: number) {
     return this.httpClient.put(
-      `${environment.BACKEND_OWNERS}setShareable/${code}/${state}`,
+      `${environment.BACKEND_OWNERS}setShareable/${code}/${state}?timeoutSeconds=${timeoutSeconds}`,
       {}
     );
   }
