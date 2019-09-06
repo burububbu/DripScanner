@@ -48,7 +48,7 @@ export class InfoDripPage {
       this.getCharts(drip);
       this.hidden = false;
     } catch (err) {
-      if ((err.status = 404)) {
+      if (err.status === 404) {
         await this.presentAlert(
           `Non è stata trovata nessuna flebo con il codice ${this.dripCode}`
         );

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { DripDeclaration } from "src/app/providers/owners/owners.service";
+import { DripDeclaration } from "src/app/models/drip-declaration";
 
 @Component({
   selector: "app-drips-list",

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Owner } from '../../common/owner.dto';
+import { Owner } from '../../common/dtos/owner.dto';
 import { DripsService } from '../drips/drips.service';
 
 @Injectable()
@@ -49,7 +49,7 @@ export class OwnersService {
 
   private async pushDrip(username: string, code: string) {
     // check drip existence
-    if ((await this.dripService.checkExistence(code)) === 0) {
+    if (!(await this.dripService.exists(code))) {
       throw new NotFoundException(`Drip ${code} doesn't exist`);
     }
     try {
@@ -75,15 +75,29 @@ export class OwnersService {
     if (!owner) {
       throw new NotFoundException('The drip doesn\'t have any owner');
     }
-    if (owner.drips.find(s => s.id === code).shareable === false) {
+    const drip = owner.drips.find(s => s.id === code);
+    if (drip.shareable === false) {
       throw new ForbiddenException('The drip is not shareable');
+    }
+    if (
+      drip.expireDate &&
+      new Date(drip.expireDate.toUTCString()) <=
+        new Date(new Date().toUTCString())
+    ) {
+      await this.setState(owner.owner, drip.id, false);
+      throw new ForbiddenException('The drip is not shareable anymore');
     }
 
     await this.removeDripObject(owner, code);
     await this.pushDrip(sub, code);
   }
 
-  async setState(sub: any, dripCode: string, state: boolean) {
+  async setState(
+    sub: string,
+    dripCode: string,
+    state: boolean,
+    timeoutSeconds?: number,
+  ) {
     const owner = await this.ownerModel
       .findOne({
         // tslint:disable-next-line: object-literal-key-quotes
@@ -95,7 +109,12 @@ export class OwnersService {
     if (!owner) {
       throw new NotFoundException('Drip doesn\'t have any owner');
     }
-    owner.drips.find(s => s.id === dripCode).shareable = state;
+    const drip = owner.drips.find(s => s.id === dripCode);
+    drip.shareable = state;
+    drip.expireDate = timeoutSeconds
+      ? new Date(Date.now() + timeoutSeconds * 1_000)
+      : undefined;
+
     return await owner.save();
   }
 

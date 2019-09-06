@@ -1,10 +1,8 @@
 import { Component } from "@angular/core";
-import {
-  OwnersService,
-  DripDeclaration
-} from "src/app/providers/owners/owners.service";
+import { OwnersService } from "src/app/providers/owners/owners.service";
 import { Router } from "@angular/router";
 import { LoadingController } from "@ionic/angular";
+import { DripDeclaration } from "src/app/models/drip-declaration";
 
 @Component({
   selector: "app-my-drips",
@@ -24,8 +22,7 @@ export class MyDripsPage {
   }
 
   async getDrips() {
-    const drips = await this.ownersService.getDrips().toPromise();
-    this.myDrips = [...drips];
+    this.myDrips = await this.ownersService.getDrips().toPromise();
   }
 
   handleOpenClick(e: Event) {

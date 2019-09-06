@@ -68,10 +68,12 @@ export class AuthService {
    *  otherwise if the token does not exist the logout is made
    */
   private async checkToken() {
-    const id_token = await this.storage.get("id_token");
-    if (id_token) {
-      if (!this.helper.isTokenExpired(id_token)) {
-        this.user = this.helper.decodeToken(await this.storage.get("id_token"));
+    const access_token = await this.storage.get("access_token");
+    if (access_token) {
+      if (!this.helper.isTokenExpired(access_token)) {
+        this.user = this.helper.decodeToken(
+          await this.storage.get("access_token")
+        );
         this.authenticationState.next(true);
       } else {
         this.logout();
@@ -85,6 +87,7 @@ export class AuthService {
    * @param idToken
    */
   private async setTokens(accessToken: string, idToken: string) {
+    console.log(accessToken);
     await this.storage.set("access_token", accessToken);
     await this.storage.set("id_token", idToken);
     this.user = this.helper.decodeToken(idToken);
