@@ -39,7 +39,7 @@ export class OwnersService {
 
   public setShareable(code: string, state: boolean, timeoutSeconds?: number) {
     return this.httpClient.put(
-      `${environment.BACKEND_OWNERS}setShareable/${code}/${state}?timeoutSeconds=${timeoutSeconds}`,
+      `${environment.BACKEND_OWNERS}setShareable/${code}/${state}?timeoutSeconds=${timeoutSeconds ? timeoutSeconds : ""}`,
       {}
     );
   }
