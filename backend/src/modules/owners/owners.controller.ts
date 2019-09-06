@@ -5,6 +5,7 @@ import {
   Put,
   Query,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { OwnersService } from './owners.service';
 import { User } from '../../common/decorators/user.decorator';
@@ -45,7 +46,7 @@ export class OwnersController {
     );
   }
 
-  @Put('removeDrip/:dripCode')
+  @Delete('removeDrip/:dripCode')
   async removeDrip(@User() user, @Param('dripCode') dripCode: string) {
     await this.ownersService.removeDrip(user.sub, dripCode);
   }
