@@ -1,5 +1,5 @@
 import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
-import { DripsService } from '../../services/drips/drips.service';
+import { DripsService } from './drips.service';
 
 @Controller('drips')
 export class DripsController {

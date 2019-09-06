@@ -17,8 +17,6 @@ export class ScanPage {
     private router: Router
   ) {}
 
-  barcodeText: string;
-
   async createToast(errorMessage: string) {
     const toast = await this.toastController.create({
       message: errorMessage,
@@ -29,30 +27,34 @@ export class ScanPage {
   }
 
   async scan() {
+    let barcodeData;
     try {
-      const barcodeData = await this.barcodeScanner.scan();
-      this.barcodeText = barcodeData.text;
+      barcodeData = await this.barcodeScanner.scan();
+    } catch (err) {
+      await this.createToast(`Can't scan the bar/QR code, error: ${err}`);
+    }
 
-      if (this.barcodeText !== "") {
+    if (barcodeData.text !== "") {
+      try {
         if (barcodeData.format === "QR_CODE") {
           await this.ownerService
-            .moveDripOwnership(this.barcodeText)
+            .moveDripOwnership(barcodeData.text)
             .toPromise();
         } else {
           await this.ownerService
-            .addDripOwnership(this.barcodeText)
+            .addDripOwnership(barcodeData.text)
             .toPromise();
         }
-      }
-    } catch (err) {
-      if (err.status === 403) {
-        this.createToast(err.error.message);
-      }
-      if (err.status === 404) {
-        this.createToast(err.error.message);
+
+        await this.createToast("Drip added to your drips");
+      } catch (err) {
+        if (err.status === 403 || err.status === 404) {
+          await this.createToast(err.error.message);
+        }
+      } finally {
+        this.router.navigateByUrl("/info-drip/" + barcodeData.text);
       }
     }
-    this.router.navigateByUrl("/info-drip/" + this.barcodeText);
   }
 
   goToExample() {
