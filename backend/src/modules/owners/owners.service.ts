@@ -79,7 +79,11 @@ export class OwnersService {
     if (drip.shareable === false) {
       throw new ForbiddenException('The drip is not shareable');
     }
-    if (drip.expireDate && new Date(drip.expireDate.toUTCString()) <= new Date(new Date().toUTCString())) {
+    if (
+      drip.expireDate &&
+      new Date(drip.expireDate.toUTCString()) <=
+        new Date(new Date().toUTCString())
+    ) {
       await this.setState(owner.owner, drip.id, false);
       throw new ForbiddenException('The drip is not shareable anymore');
     }
